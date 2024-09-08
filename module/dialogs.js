@@ -24,7 +24,7 @@ export class genericDialog extends FormApplication {
         this.render(true);
     }
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ['abfalter-dialog generic-dialog'],
             submitOnChange: true,
             closeOnSubmit: false,
@@ -54,7 +54,7 @@ export class genericDialog extends FormApplication {
         return this.data;
     }
     async _updateObject(event, formData) {
-        this.data = mergeObject(this.data, formData);
+        this.data = foundry.utils.mergeObject(this.data, formData);
         this.render();
     }
 }

@@ -5,9 +5,22 @@ export const preloadHandlebarsTemplates = () => {
         templates.CustomHotBar,
         templates.dialog.generic,
         templates.dialog.initiative,
+        // generic ui tiles
+        templates.dialog.common.ui.horizontalInput,
+        templates.dialog.common.ui.verticalInput,
+        templates.dialog.common.ui.customSelect,
+        templates.dialog.common.ui.customSelectChoices,
+        templates.dialog.common.ui.loadingIndicator,
+        // autoCombat
+        templates.dialog.combat.gmCombatDialog.main,
         templates.dialog.combat.combatAttackDialog.main,
         templates.dialog.combat.combatAttackDialog.parts.combat,
         templates.dialog.combat.combatAttackDialog.parts.mystic,
+        templates.dialog.combat.combatAttackDialog.parts.psychic,
+        templates.dialog.combat.combatDefenseDialog.main,
+        templates.dialog.combat.combatDefenseDialog.parts.combat,
+        templates.dialog.combat.combatDefenseDialog.parts.mystic,
+        templates.dialog.combat.combatDefenseDialog.parts.psychic,
         //actor tabs
         "systems/abfalter/templates/actor/parts/bio.hbs",
         "systems/abfalter/templates/actor/parts/general.hbs",

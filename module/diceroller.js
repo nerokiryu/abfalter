@@ -94,9 +94,10 @@ export async function rollCharacteristic(html, actorData, finalValue, label) {
     };
     ChatMessage.applyRollMode(chatData, game.settings.get("core", "rollMode"));
     ChatMessage.create(chatData);
+    return rollResult;
 }
 
-async function abilityRoll(html, actorData, finalValue, label) {
+export async function abilityRoll(html, actorData, finalValue, label) {
     let fatigueMod = parseInt(html.find('#fatiguemod').val()) || 0;
     let mod = parseInt(html.find('#modifiermod').val()) || 0;
     let fatigueFinal = Math.floor(fatigueMod * 15);
@@ -156,9 +157,10 @@ async function abilityRoll(html, actorData, finalValue, label) {
     };
     ChatMessage.applyRollMode(chatData, game.settings.get("core", "rollMode"));
     ChatMessage.create(chatData);
+    return rollData;
 }
 
-async function rollCombatWeapon(html, actorData, finalValue, label, complex) {
+export async function rollCombatWeapon(html, actorData, finalValue, label, complex) {
     let fatigueMod = parseInt(html.find('#fatiguemod').val()) || 0;
     let mod = parseInt(html.find('#modifiermod').val()) || 0;
     let fatigueFinal = Math.floor(fatigueMod * 15);
@@ -222,6 +224,7 @@ async function rollCombatWeapon(html, actorData, finalValue, label, complex) {
     };
     ChatMessage.applyRollMode(chatData, game.settings.get("core", "rollMode"));
     ChatMessage.create(chatData);
+    return rollData;
 }
 
 export async function openRollFunction(msg) {
@@ -273,6 +276,7 @@ export async function openRollFunction(msg) {
         content: content,
         flags: { rollData, num}
     });
+    return rollData;
 }
 
 export async function fumbleRollFunction(msg) {
@@ -309,6 +313,7 @@ export async function fumbleRollFunction(msg) {
         content: content,
         flags: { rollData, num }
     });
+    return rollData;
 }
 
 
@@ -343,6 +348,7 @@ export async function rollResistance(html, actorData, finalValue, label) {
     };
     ChatMessage.applyRollMode(chatData, game.settings.get("core", "rollMode"));
     ChatMessage.create(chatData);
+    return rollResult;
 }
 
 export async function rollBreakage(html, actorData, finalValue, label) {
@@ -363,4 +369,5 @@ export async function rollBreakage(html, actorData, finalValue, label) {
     };
     ChatMessage.applyRollMode(chatData, game.settings.get("core", "rollMode"));
     ChatMessage.create(chatData);
+    return rollResult;
 }

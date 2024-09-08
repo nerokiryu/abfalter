@@ -1,0 +1,260 @@
+<form class="{{cssClass}} gmCombatDialog" autocomplete="off">
+    <div class="combatants">
+        <span> this is what the gm sees </span>
+        <span> like attacker + info VS defender + info</span><br \>
+
+        <div class='combatant-profile'>
+            <div class='image'>
+                <img src="{{this.attacker.token.texture.src}}" data-edit='img' title="{{this.attacker.token.name}}" />
+            </div>
+            <p class='label name'>
+                {{this.attacker.token.name}}
+            </p>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {{#if this.attacker.isReady}}
+        {{>
+        "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+        class="custom-modifier"
+        title=(localize 'abfalter.autoCombat.dialog.attackerCustomModifier.title')
+        inputName="attacker.customModifier"
+        inputValue=this.attacker.customModifier
+        }}
+
+
+        <p class='attack-type label'>
+            {{localize (concat 'abfalter.autoCombat.dialog.attackType.' this.attacker.result.type '.title')}}
+        </p>
+        <div class='values'>
+            {{#if (eq this.attacker.result.type 'combat')}}
+                {{#unless this.attacker.result.combat.unarmed}}
+                    {{#unless (eq this.attacker.result.combat.weapon.system.quality 0)}}
+                        {{>
+                        "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+                        class="weapon-used"
+                        title=(localize 'abfalter.autoCombat.dialog.weaponUsed.title')
+                        inputType="text"
+                        disabled=true
+                        inputValue=(concat this.attacker.result.combat.weapon.name " + " this.attacker.result.combat.weapon.system.quality)
+                        }}
+                    {{else}}
+                        {{>
+                        "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+                        class="weapon-used"
+                        title=(localize 'abfalter.autoCombat.dialog.weaponUsed.title')
+                        inputType="text"
+                        disabled=true
+                        inputValue=this.attacker.result.combat.weapon.name
+                        }}
+                    {{/unless}}
+                    {{>
+                    "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+                    class="weapon-attack"
+                    title=(localize 'abfalter.autoCombat.dialog.weaponAttack.title')
+                    inputType="text"
+                    disabled=true
+                    inputValue=this.attacker.rollResult
+                    }}
+                {{else}}
+                    {{>
+                    "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+                    class="weapon-used"
+                    title=(localize 'abfalter.autoCombat.dialog.weaponUsed.title')
+                    inputType="text"
+                    disabled=true
+                    inputValue="Unarmed"
+                    }}
+                    {{>
+                    "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+                    class="weapon-attack"
+                    title=(localize 'abfalter.autoCombat.dialog.attack.title')
+                    inputType="text"
+                    disabled=true
+                    inputValue=this.attacker.rollResult
+                    }}
+                {{/unless}}
+                {{>
+                "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+                class="weapon-attack"
+                inputName="attacker.updateRoll"
+                inputType="button"
+                inputValue="update Roll Value"
+                }}
+            {{/if}}
+
+           {{!--  {{#if (eq this.attacker.result.type 'mystic')}}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="spell-used"
+            title=(concat (localize 'abfalter.autoCombat.dialog.spell.title') ' - ' (localize (concat
+            'anima.ui.mystic.spell.grade.' this.attacker.result.values.spellGrade '.title')))
+            inputType="text"
+            disabled=true
+            inputValue=this.attacker.result.spell.name
+            }}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="magic-projection"
+            title=(localize 'abfalter.autoCombat.dialog.gm.projection.title')
+            inputType="text"
+            disabled=true
+            inputValue=this.attacker.result.values.magicProjection
+            }}
+            {{/if}}
+
+            {{#if (eq this.attacker.result.type 'psychic')}}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="psychic-potential"
+            title=(localize 'abfalter.autoCombat.dialog.gm.psychicPotential.title')
+            inputType="text"
+            disabled=true
+            inputValue=this.attacker.result.values.psychicPotential
+            }}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="power-used"
+            title=(localize 'abfalter.autoCombat.dialog.gm.psychicPower.title')
+            inputType="text"
+            disabled=true
+            inputValue=this.attacker.result.power.name
+            }}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="psychic-projection"
+            title=(localize 'abfalter.autoCombat.dialog.gm.projection.title')
+            inputType="text"
+            disabled=true
+            inputValue=this.attacker.result.values.psychicProjection
+            }}
+            {{/if}} --}}
+
+        </div>
+        <div class='values'>
+
+{{!--             {{#if (neq this.attacker.result.values.critic '-')}}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="critic"
+            title=(localize 'abfalter.autoCombat.dialog.critic.title')
+            inputType="text"
+            disabled=true
+            inputValue=(localize (concat 'anima.ui.combat.armors.at.' this.attacker.result.values.critic '.title'))
+            }}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="damage"
+            title=(localize 'abfalter.autoCombat.dialog.damage.title')
+            inputType="text"
+            disabled=true
+            inputValue=this.attacker.result.damage
+            }}
+            {{/if}} --}}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="roll"
+            title=(localize 'abfalter.autoCombat.dialog.rolled.title')
+            inputType="text"
+            disabled=true
+            inputValue=this.attacker.result.values.roll
+            }}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="total"
+            title=(localize 'abfalter.autoCombat.dialog.total.title')
+            inputType="text"
+            disabled=true
+            inputValue=this.attacker.result.values.total
+            }}
+        </div>
+        <div class="combat-mod">
+            {{#each this.attacker.result.values.attackerCombatMod as |attackerCombatMod|}}
+            {{#unless (eq attackerCombatMod.value 0)}}
+            {{>
+            "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+            class="combatMod-value"
+            title=(localize (concat 'abfalter.autoCombat.dialog.combatMod.' @key '.title'))
+            inputType="text"
+            disabled=true
+            inputValue=attackerCombatMod.value
+            }}
+            {{>
+            "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+            class="combatMod-apply"
+            inputType="checkbox"
+            disabled=false
+            inputName=(concat "attacker.result.values.attackerCombatMod." @key ".apply")
+            inputValue=(eq attackerCombatMod.apply true)
+            }}
+            {{/unless}}
+            {{/each}}
+        </div>
+        {{else}}
+        <div class='waiting-row'>
+            {{!-- {{>'systems/animabf/templates/common/ui/loading-indicator.hbs' class="big"}} --}}
+            <p class='label'>{{localize 'abfalter.autoCombat.dialog.waitingAttack.title'}}</p>
+        </div>
+        {{/if}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class='versus-label'>
+            <p class='label'>VS</p>
+        </div>
+
+        <div class='combatant-profile'>
+            <div class='image'>
+                <img src='{{this.defender.token.texture.src}}' data-edit='img' title='{{this.defender.token.name}}' />
+            </div>
+            <p class='label name'>
+                {{this.defender.token.name}}
+            </p>
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+</form>

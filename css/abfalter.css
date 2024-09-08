@@ -5723,7 +5723,6 @@ h6 {
   position: fixed;
   bottom: 75px;
   left: 200px;
-  visibility: hidden;
 }
 .customActionBar .macros {
   display: flex;

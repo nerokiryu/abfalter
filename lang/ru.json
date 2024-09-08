@@ -882,6 +882,8 @@
       "noSelectToken": "Должен быть выбран один токен в качестве атакующего",
       "wrongScene": "Не в активной сцене",
       "aoeAttack": "Вы инициировали AOE-атаку, которая еще не реализована.",
+      "rollingAtk": "Rolling Attack",
+      "rollingDfs": "Rolling Defense",
       "modifier": "Модификатор",
       "openRoll": "Открытый бросок!",
       "fumble": "Глич!",

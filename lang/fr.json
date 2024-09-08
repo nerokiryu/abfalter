@@ -881,6 +881,8 @@
       "noSelectToken": "Doit avoir un token sélectionné comme attaquant",
       "wrongScene": "Pas dans la scène active",
       "aoeAttack": "Vous avez initié une attaque de zone qui n'a pas encore été implémentée",
+      "rollingAtk": "Lancement de l'Attaque",
+      "rollingDfs": "Lancement de la défense",
       "modifier": "Modificateur",
       "openRoll": "Jet Ouvert !",
       "fumble": "Maladresse !",

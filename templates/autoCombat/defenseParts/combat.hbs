@@ -1,0 +1,101 @@
+<div>
+    <span> this is the combat html which is heavily WIP still </span><br \>
+
+
+
+    <span> Modifier to the attack </span>
+    {{>
+    "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+    title=(localize 'abfalter.autoCombat.dialog.modifier.title')
+    disabled=this.defenseSent
+    inputName="defender.combat.modifier"
+    inputValue=this.defender.combat.modifier
+    }}
+ 
+
+
+    {{#if ui.hasFatiguePoints}}
+    <br \><span> Number of fatigue point you want to use </span>
+    {{>
+    "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+    title=(localize 'abfalter.autoCombat.dialog.fatigue.title')
+    disabled=this.defenseSent
+    inputName="defender.combat.fatigueUsed"
+    inputValue=this.defender.combat.fatigueUsed
+    }}
+    {{else}}
+    <p class='label no-fatigue'>{{localize 'abfalter.autoCombat.dialog.notEnoughFatigue.title'}}</p>
+    {{/if}}
+
+
+
+
+
+    <br \><span> where you set how you defend physically </span><br \>
+
+
+    {{#if this.attacker.combat.unarmed}}
+    {{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+        title=(localize 'abfalter.autoCombat.dialog.weapon.title')
+        disabled=true
+    }}
+        <option>Unarmed</option>
+    {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+    {{else}}
+    {{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+        title=(localize 'abfalter.autoCombat.dialog.weapon.title')
+        disabled=this.defenseSent
+        inputName='defender.combat.weaponUsed'
+    }}
+        {{#each this.defender.combat.weaponsList}}
+        <option {{#if (eq this._id ../this.defender.combat.weaponUsed)}}selected{{/if}} value='{{this._id}}'>{{localize 'abfalter.autoCombat.dialog.weaponRow.attack.title' name=this.name value=this.system.finalAtk}}</option>
+        {{/each}}
+    {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+    {{/if}}
+
+
+
+    {{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+    title=(localize 'abfalter.autoCombat.dialog.defenseCount.title')
+    disabled=this.defenseSent
+    inputName='defender.combat.multipleDefensesPenalty'
+    inputValue=this.defender.combat.multipleDefensesPenalty
+    }}
+    <option {{#if (eq this.defender.combat.multipleDefensesPenalty 0)}}selected{{/if}} value="0">1ª {{localize 'abfalter.autoCombat.dialog.defending.defend.title'}}</option>
+    <option {{#if (eq this.defender.combat.multipleDefensesPenalty -30)}}selected{{/if}} value="-30">2ª {{localize 'abfalter.autoCombat.dialog.defending.defend.title'}}</option>
+    <option {{#if (eq this.defender.combat.multipleDefensesPenalty -50)}}selected{{/if}} value="-50">3ª {{localize 'abfalter.autoCombat.dialog.defending.defend.title'}}</option>
+    <option {{#if (eq this.defender.combat.multipleDefensesPenalty -70)}}selected{{/if}} value="-70">4ª {{localize 'abfalter.autoCombat.dialog.defending.defend.title'}}</option>
+    <option {{#if (eq this.defender.combat.multipleDefensesPenalty -90)}}selected{{/if}} value="-90">5ª {{localize 'abfalter.autoCombat.dialog.defending.defend.title'}}</option>
+    {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+
+    <div class='columns'>
+    <div>
+        {{>
+        "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+        title=(localize 'abfalter.autoCombat.dialog.combat.accumulateDefenses.title')
+        disabled=this.defenseSent
+        inputType="checkbox"
+        inputName="defender.combat.accumulateDefenses"
+        inputValue=(eq this.defender.combat.accumulateDefenses true)
+        }}
+    </div>
+    </div>
+
+    {{#if this.defenseSent}}
+    <div class='defense-sent'>
+        {{>'systems/abfalter/templates/autoCombat/common/ui/loading-indicator.hbs' class="big"}}
+        <p class='label'>
+        {{localize 'abfalter.autoCombat.dialog.defenseSent.title'}}
+        </p>
+    </div>
+    {{else}}
+    <div class='defense-buttons'>
+        <button class='abf-button sendNormDefense' data-type='dodge'>
+        {{localize 'abfalter.autoCombat.dialog.dodgeButton.title'}}
+        </button>
+        <button class='abf-button sendNormDefense' data-type='block'>
+        {{localize 'abfalter.autoCombat.dialog.blockButton.title'}}
+        </button>
+    </div>
+    {{/if}}
+</div>

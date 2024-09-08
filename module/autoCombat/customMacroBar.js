@@ -18,6 +18,7 @@ const playerMacro = [
 
 export const customMacroBar = async () => {
     const gameCopy = game;
+    console.log(gameCopy)
     const isGM = gameCopy.user?.isGM;
     const [customHotbarHTML] = await renderTemplates({
         name: templates.CustomHotBar,
