@@ -898,6 +898,7 @@
     "dialogs": {
       "roll": "Lanzar",
       "cancel": "Cancelar",
+      "accept": "Acceptar",
       "diceRoller": "Cubilete de dados",
       "noAtkSelf": "You cannot attack yourself",
       "noActor": "The target token does not have an actor associated with it",

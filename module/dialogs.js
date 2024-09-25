@@ -68,7 +68,7 @@ export class promptDialog extends genericDialog {
                 {
                     id: 'on-confirm-button',
                     fn: onAccept,
-                    content: game.i18n.localize('dialogs.accept')
+                    content: game.i18n.localize('abfalter.dialogs.accept')
                 }
             ]
         });
@@ -91,8 +91,8 @@ export class confirmationDialog extends genericDialog {
     <p class='body'>${body}</p>
 `,
             buttons: [
-                { id: 'on-cancel-button', fn: onCancel, content: game.i18n.localize('dialogs.cancel') },
-                { id: 'on-confirm-button', fn: onConfirm, content: game.i18n.localize('dialogs.accept') }
+                { id: 'on-cancel-button', fn: onCancel, content: game.i18n.localize('abfalter.dialogs.cancel') },
+                { id: 'on-confirm-button', fn: onConfirm, content: game.i18n.localize('abfalter.dialogs.accept') }
             ]
         });
     }

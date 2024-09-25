@@ -82,7 +82,7 @@ export class playerCombatManager extends combatManager {
         if (targetToken.length === undefined) {
             console.log("Single Attack");
             if (attackerToken?.id) {
-                await genericDialogs.confirm(this.game.i18n.format('macros.combat.dialog.attackConfirm.title'), this.game.i18n.format('macros.combat.dialog.attackConfirm.body.title', { target: targetToken.name }), {
+                await genericDialogs.confirm(this.game.i18n.format('abfalter.autoCombat.dialog.attackConfirm.title'), this.game.i18n.format('abfalter.autoCombat.dialog.attackConfirm.body.title', { target: targetToken.name }), {
                     onConfirm: () => {
                         if (attackerToken?.id && targetToken?.id) {
                             this.combat = this.createNewCombat(attackerToken, targetToken);

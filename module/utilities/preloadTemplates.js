@@ -11,6 +11,11 @@ export const preloadHandlebarsTemplates = () => {
         templates.dialog.common.ui.customSelect,
         templates.dialog.common.ui.customSelectChoices,
         templates.dialog.common.ui.loadingIndicator,
+        templates.dialog.common.ui.addItemButton,
+        templates.dialog.common.ui.groupBody,
+        templates.dialog.common.ui.groupFooter,
+        templates.dialog.common.ui.groupHeaderTitle,
+        templates.dialog.common.ui.groupHeader,
         // autoCombat
         templates.dialog.combat.gmCombatDialog.main,
         templates.dialog.combat.combatAttackDialog.main,
@@ -21,6 +26,8 @@ export const preloadHandlebarsTemplates = () => {
         templates.dialog.combat.combatDefenseDialog.parts.combat,
         templates.dialog.combat.combatDefenseDialog.parts.mystic,
         templates.dialog.combat.combatDefenseDialog.parts.psychic,
+        // chat message
+        templates.chat.combatResult,
         //actor tabs
         "systems/abfalter/templates/actor/parts/bio.hbs",
         "systems/abfalter/templates/actor/parts/general.hbs",

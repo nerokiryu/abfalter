@@ -39,7 +39,16 @@ export const templates = {
                 customSelect: 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs',
                 customSelectChoices: 'systems/abfalter/templates/autoCombat/common/ui/custom-select-choices.hbs',
                 loadingIndicator: 'systems/abfalter/templates/autoCombat/common/ui/loading-indicator.hbs',
+
+                addItemButton: 'systems/abfalter/templates/autoCombat/common/ui/add-item-button.hbs',
+                groupBody: 'systems/abfalter/templates/autoCombat/common/ui/group-body.hbs',
+                groupFooter: 'systems/abfalter/templates/autoCombat/common/ui/group-footer.hbs',
+                groupHeaderTitle: 'systems/abfalter/templates/autoCombat/common/ui/group-header-title.hbs',
+                groupHeader: 'systems/abfalter/templates/autoCombat/common/ui/group-header.hbs',
             }
         }
+    },
+    chat: {
+        combatResult: 'systems/abfalter/templates/autoCombat/chat/combat-result.hbs',
     }
 }

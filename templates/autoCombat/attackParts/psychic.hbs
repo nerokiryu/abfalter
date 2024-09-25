@@ -1,2 +1,113 @@
 <span> this is the psychic html </span>
 <span> where you set how you attack psychically </span>
+
+{{>
+"systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+title=(localize 'abfalter.autoCombat.dialog.modifier.title')
+disabled=this.attackSent
+inputName="attacker.psychic.modifier"
+inputValue=this.attacker.psychic.modifier
+}}
+
+{{>
+"systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+title=(localize 'abfalter.autoCombat.dialog.psychicProjection.title')
+disabled=this.attackSent
+inputName="attacker.psychic.psychicProjection"
+inputValue=this.attacker.psychic.psychicProjection
+}}
+
+{{>
+"systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+title=(localize 'abfalter.autoCombat.dialog.psychicPotential.title')
+disabled=this.attackSent
+inputName="attacker.psychic.psychicPotential.special"
+inputValue=this.attacker.psychic.psychicPotential.special
+hasSecondaryInput=true
+disableSecondaryInput=true
+secondaryInputName="attacker.psychic.psychicPotential.final"
+secondaryInputValue=this.attacker.psychic.psychicPotential.final
+}}
+
+{{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+title=(localize 'abfalter.autoCombat.dialog.psychicPower.title')
+disabled=this.attackSent
+inputName='attacker.psychic.powerUsed'
+}}
+{{#each this.attacker.psychic.powers}}
+<option {{#if (eq this._id ../this.attacker.psychic.powerUsed)}}selected{{/if}} value='{{this._id}}'>{{this.name}}
+</option>
+{{/each}}
+{{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+
+{{> 'systems/abfalter/templates/autoCombat/common/ui/custom-select-choices.hbs'
+disabled=this.attackSent
+choices=config.iterables.combat.weapon.criticTypesWithNone
+title=(localize "abfalter.autoCombat.dialog.weapon.critic.title")
+inputName='attacker.psychic.critic'
+inputValue=this.attacker.psychic.critic
+}}
+
+{{>
+"systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+title=(localize "abfalter.autoCombat.dialog.psychic.damageModifier.title")
+disabled=this.attackSent
+inputName="attacker.psychic.damageModifier"
+inputValue=this.attacker.psychic.damageModifier
+}}
+
+{{#if (and (gt this.attacker.psychic.freePsychicPoints 0) (eq
+this.attacker.actor.system.psychic.psychicSettings.fatigueResistance false))}}
+<div class='columns'>
+    <div>
+        {{>
+        "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+        title=(localize 'abfalter.autoCombat.dialog.eliminateFatigue.title')
+        inputType="checkbox"
+        inputName="attacker.psychic.eliminateFatigue"
+        inputValue=(eq this.attacker.psychic.eliminateFatigue true)
+        }}
+    </div>
+</div>
+{{/if}}
+
+{{#unless (eq this.attacker.actor.system.psychic.mentalPatterns.length 0)}}
+<div class='columns'>
+    <div>
+        {{>
+        "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+        title=(localize 'abfalter.autoCombat.dialog.mentalPatternImbalance.title')
+        inputType="checkbox"
+        inputName="attacker.psychic.mentalPatternImbalance"
+        inputValue=(eq this.attacker.psychic.mentalPatternImbalance true)
+        }}
+    </div>
+</div>
+{{/unless}}
+
+{{#if (eq this.attacker.distance.enable false)}}
+<div class='columns'>
+    <div>
+        {{>
+        "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+        title=(localize 'abfalter.autoCombat.dialog.distance.title')
+        inputType="checkbox"
+        inputName="attacker.psychic.distanceCheck"
+        inputValue=(eq this.attacker.psychic.distanceCheck true)
+        }}
+    </div>
+</div>
+{{/if}}
+
+{{#if this.attackSent}}
+<div class='psychic-attack-sent'>
+    {{>'systems/abfalter/templates/autoCombat/common/ui/loading-indicator.hbs' class="big"}}
+    <p class='label'>
+        {{localize 'abfalter.autoCombat.dialog.attackSent.title'}}
+    </p>
+</div>
+{{else}}
+<button class='abf-button sendPsychicAttack'>
+    {{localize 'abfalter.autoCombat.dialog.attackButton.title'}}
+</button>
+{{/if}}

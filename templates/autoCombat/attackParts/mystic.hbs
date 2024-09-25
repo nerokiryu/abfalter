@@ -1,2 +1,149 @@
 <span> this is the mystic html </span>
 <span> where you set how you attack magically </span>
+
+{{>
+"systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+  title=(localize "abfalter.autoCombat.dialog.zeonAccumulated.title")
+  disabled=true
+  inputName="attacker.mystic.spellCasting.zeon.accumulated"
+  inputValue=this.attacker.mystic.spellCasting.zeon.accumulated
+}}
+
+{{>
+"systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+  title=(localize "abfalter.autoCombat.dialog.magicProjection.title")
+  disabled=this.attackSent
+  inputName="attacker.mystic.magicProjection.special"
+  inputValue=this.attacker.mystic.magicProjection.special
+  hasSecondaryInput=true
+  disableSecondaryInput=true
+  secondaryInputName="attacker.mystic.magicProjection.final"
+  secondaryInputValue=attacker.mystic.magicProjection.final
+}}
+
+{{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+  title=(localize 'abfalter.autoCombat.dialog.spell.title')
+  disabled=this.attackSent
+  inputName='attacker.mystic.spellUsed'
+}}
+  {{#each this.attacker.mystic.spells}}
+    <option {{#if (eq this._id ../this.attacker.mystic.spellUsed)}}selected{{/if}} value='{{this._id}}'>{{this.name}}</option>
+  {{/each}}
+{{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+
+{{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+  title=(localize 'abfalter.autoCombat.dialog.spellGrade.title')
+  disabled=this.attackSent
+  inputName='attacker.mystic.spellGrade'
+}}
+{{#each this.attacker.mystic.attainableSpellGrades}}
+  <option {{#if (eq ../this.attacker.mystic.spellGrade this)}}selected{{/if}} value='{{this}}'>{{localize (concat 'abfalter.autoCombat.dialog.spellGrade.' this '.title')}}</option>
+{{/each}}
+{{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+
+{{#unless (eq this.attacker.mystic.resistanceEffect.type undefined)}}
+{{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+  title=(localize 'abfalter.autoCombat.dialog.resistanceEffect.title')
+  disabled=this.attackSent
+  inputName='attacker.mystic.resistanceEffect.types'
+}}
+{{#each this.attacker.mystic.resistanceEffect.types}}
+  <option {{#if (eq ../this.attacker.mystic.resistanceEffect.type this)}}selected{{/if}} value='{{this}}'>{{localize (concat 'abfalter.autoCombat.dialog.resistanceEffect.' this '.title')}}</option>
+{{/each}}
+{{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+{{/unless}}
+
+{{!-- {{> 'systems/abfalter/templates/autoCombat/common/ui/custom-select-choices.hbs'
+  disabled=this.attackSent
+  choices=config.iterables.combat.weapon.criticTypesWithNone
+  title=(localize "abfalter.autoCombat.dialog.weapon.damageType.title")
+  inputName='attacker.mystic.weaponType'
+  inputValue=this.attacker.mystic.damage.type
+}} --}}
+
+{{>
+"systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+  title=(localize "abfalter.autoCombat.dialog.damage.title")
+  disabled=this.attackSent
+  inputName="attacker.mystic.damage.special"
+  inputValue=this.attacker.mystic.damage.special
+  hasSecondaryInput=true
+  disableSecondaryInput=true
+  secondaryInputName="attacker.mystic.damage.final"
+  secondaryInputValue=attacker.mystic.damage.final
+}}
+
+
+{{#if (eq this.attacker.distance.enable false)}}
+<div class='columns'>
+  <div>
+    {{>
+      "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+      title=(localize 'abfalter.autoCombat.dialog.distance.title')
+      inputType="checkbox"
+      inputName="attacker.mystic.distanceCheck"
+      inputValue=(eq this.attacker.mystic.distanceCheck true)
+    }}
+  </div>
+</div>
+{{/if}}
+
+{{#if (and this.attacker.mystic.spellCasting.canCast.innate (eq this.attacker.mystic.spellCasting.override false))}}
+<div class='columns'>
+  <div>
+    {{>
+    "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+    title=(localize 'abfalter.autoCombat.dialog.castInnate.title')
+    disabled=this.attackSent
+    inputType="checkbox"
+    inputName="attacker.mystic.spellCasting.casted.innate"
+    inputValue=(eq this.attacker.mystic.spellCasting.casted.innate true)
+    }}
+  </div>
+</div>
+{{/if}}
+
+{{#if (and this.attacker.mystic.spellCasting.canCast.prepared (eq this.attacker.mystic.spellCasting.override false))}}
+<div class='columns'>
+  <div>
+    {{>
+    "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+    title=(localize 'abfalter.autoCombat.dialog.castPrepared.title')
+    disabled=this.attackSent
+    inputType="checkbox"
+    inputName="attacker.mystic.spellCasting.casted.prepared"
+    inputValue=(eq this.attacker.mystic.spellCasting.casted.prepared true)
+    }}
+  </div>
+</div>
+{{/if}}
+
+{{#if this.attacker.mystic.overrideMysticCast}}
+<hr class='hr'/>
+<div class='columns'>
+  <div>
+    {{>
+    "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+    title=(localize 'abfalter.autoCombat.dialog.castOverride.title')
+    disabled=this.attackSent
+    inputType="checkbox"
+    inputName="attacker.mystic.spellCasting.override"
+    inputValue=(eq this.attacker.mystic.spellCasting.override true)
+    }}
+  </div>
+</div>
+{{/if}}
+
+{{#if this.attackSent}}
+  <div class='mystic-attack-sent'>
+    {{>'systems/abfalter/templates/autoCombat/common/ui/loading-indicator.hbs' class="big"}}
+    <p class='label'>
+      {{localize 'abfalter.autoCombat.dialog.attackSent.title'}}
+    </p>
+  </div>
+{{else}}
+  <button class='abf-button sendMysticAttack'>
+    {{localize 'abfalter.autoCombat.dialog.attackButton.title'}}
+  </button>
+{{/if}}
+ 

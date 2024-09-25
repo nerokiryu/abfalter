@@ -101,8 +101,8 @@ export class gmCombatManager extends combatManager {
             console.log("Single Attack");
             if (attackerToken?.id) {
                 await genericDialogs.confirm(
-                    this.game.i18n.format("macros.combat.dialog.attackConfirm.title"),
-                    this.game.i18n.format("macros.combat.dialog.attackConfirm.body.title", { target: targetToken.name }),
+                    this.game.i18n.format("abfalter.autoCombat.dialog.attackConfirm.title"),
+                    this.game.i18n.format("abfalter.autoCombat.dialog.attackConfirm.body.title", { target: targetToken.name }),
                     {
                         onConfirm: () => {
                             if (attackerToken?.id && targetToken?.id) {
@@ -195,7 +195,7 @@ export class gmCombatManager extends combatManager {
                     }
                 },
             },
-            { damageType: attackResult.combat.damage.type, atPen: attackResult.combat.damage.atPen }
+            { result: attackResult, damageType: attackResult.values.damage.type, atPen: attackResult.values.damage.atPen, attackType: attackResult.type}
         );
     }
 

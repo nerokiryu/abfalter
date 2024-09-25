@@ -1,0 +1,16 @@
+<div class='common-group {{this.class}} {{#if this.contractible}}contractible-group {{#if (eq (lookup xRoot.system.ui.contractibleItems this.contractibleItemId) true)}}contracted{{/if}} {{#if this.contractFooter}}contract-footer{{/if}}{{/if}}'>
+  {{#if this.contractible}}
+    <img
+      class='contractible-button {{#if (eq (lookup xRoot.system.ui.contractibleItems this.contractibleItemId) true)}}contracted{{/if}}'
+      data-contractible-item-id='{{this.contractibleItemId}}'
+      src='systems/abfalter/img/up-arrow.svg'
+    />
+    <input
+      type='hidden'
+      name='system.ui.contractibleItems.{{this.contractibleItemId}}'
+      value={{lookup xRoot.system.ui.contractibleItems this.contractibleItemId}}
+    />
+  {{/if}}
+
+  {{> @partial-block}}
+</div>

@@ -11,14 +11,14 @@ export class combatManager {
 		const token = this.game.scenes?.find(scene => !!scene.tokens.find(u => u?.id === tokenId))
 			?.tokens.find(u => u?.id === tokenId);
 		if (!token) {
-			const message = this.game.i18n.format('macros.combat.dialog.error.noExistTokenAnymore.title', {
+			const message = this.game.i18n.format('abfalter.autoCombat.dialog.error.noExistTokenAnymore.title', {
 				token: tokenId
 			});
 			genericDialogs.prompt(message);
 			throw new Error(message);
 		}
 		if (!token.actor) {
-			const message = this.game.i18n.format('macros.combat.dialog.error.noActorAssociatedToToken.title', {
+			const message = this.game.i18n.format('abfalter.autoCombat.dialog.error.noActorAssociatedToToken.title', {
 				token: tokenId
 			});
 			genericDialogs.prompt(message);

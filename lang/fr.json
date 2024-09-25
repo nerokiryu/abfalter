@@ -873,6 +873,7 @@
     "dialogs": {
       "roll": "Lancer",
       "cancel": "Annuler",
+      "accept": "Accepter",
       "diceRoller": "Lanceur de Dés",
       "noAtkSelf": "Vous ne pouvez pas vous attaquer vous-même",
       "noActor": "Le token ciblé n'a pas d'acteur associé",

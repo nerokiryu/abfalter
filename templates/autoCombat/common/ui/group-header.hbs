@@ -1,0 +1,17 @@
+<div class='group-header'>
+  {{# if @partial-block}}
+    {{> @partial-block}}
+  {{else}}
+    {{#if this.addRowButtonData}}
+      {{>
+      "systems/abfalter/templates/autoCombat/common/ui/add-item-button.hbs"
+        class=this.addRowButtonClass
+        data=this.addRowButtonData
+      }}
+    {{/if}}
+    {{>
+    "systems/abfalter/templates/autoCombat/common/ui/group-header-title.hbs"
+      title=this.title
+    }}
+  {{/if}}
+</div>

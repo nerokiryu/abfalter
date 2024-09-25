@@ -48,7 +48,7 @@
         inputName='defender.combat.weaponUsed'
     }}
         {{#each this.defender.combat.weaponsList}}
-        <option {{#if (eq this._id ../this.defender.combat.weaponUsed)}}selected{{/if}} value='{{this._id}}'>{{localize 'abfalter.autoCombat.dialog.weaponRow.attack.title' name=this.name value=this.system.finalAtk}}</option>
+        <option {{#if (eq this._id ../this.defender.combat.weaponUsed)}}selected{{/if}} value='{{this._id}}'>{{localize 'abfalter.autoCombat.dialog.weaponRow.defense.title' name=this.name value=this.system.finalBlk valueDodge=this.system.finalDod}}</option>
         {{/each}}
     {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
     {{/if}}
