@@ -95,7 +95,7 @@ export class gmCombatManager extends combatManager {
         if (!user) return;
         const attackerToken = getSelectedToken(this.game); // makes the selected token the attacker, there can only be 1 attacker.
         const { targets } = user;
-        const targetToken = getTargetToken(attackerToken, targets);
+        const targetToken = getTargetToken(attackerToken, targets).document;
 
         if (targetToken.length === undefined) {
             console.log("Single Attack");
