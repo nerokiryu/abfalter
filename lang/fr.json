@@ -627,6 +627,7 @@
       "breakage": "Fracassement",
       "requir": "Exigence",
       "penalty": "Pénalités",
+      "none": "N/A",
       "cut": "TRA",
       "imp": "CON",
       "thr": "PER",

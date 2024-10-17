@@ -627,6 +627,7 @@
       "breakage": "Rotura",
       "requir": "Requerimiento",
       "penalty": "Penalizadores",
+      "none": "N/D",
       "cut": "FIL",
       "imp": "PEN",
       "thr": "CON",

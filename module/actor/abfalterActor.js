@@ -1,5 +1,5 @@
 import { abfalterSettingsKeys } from "../utilities/abfalterSettings.js";
-import { calculateDamage } from "../autoCombat/utilities.js";
+import { calculateDamage, psychicFatigueCheck } from "../autoCombat/utilities.js";
 export default class abfalterActor extends Actor {
     prepareData() {
         const isTypeData = this.system instanceof foundry.abstract.TypeDataModel;
@@ -520,19 +520,93 @@ export default class abfalterActor extends Actor {
     }
 
     /**
+     * Evaluates the psychic fatigue caused by using a power in the game.
+     * It checks if the actor has immunity to fatigue and calculates the fatigue value based on the power's effects and the psychic difficulty.
+     * If the actor is not immune to fatigue, it applies the fatigue value to the actor's characteristics.
+     *
+     * @param {object} power - The power for which the psychic fatigue is being evaluated.
+     * @param {number} powerLevel - The difficulty level of the psychic power.
+     * @param {boolean} eliminateFatigue - Whether to apply the fatigue value or not to the actor's characteristics.
+     *
+     * @returns {number} The calculated psychic fatigue value.
+     */
+    async evaluatePsychicFatigue(power, powerLevel, eliminateFatigue) {
+        const { psychicPoint } = this.system;
+        
+        const psychicFatigue = {
+            value: psychicFatigueCheck(power?.system[powerLevel]),
+            immune: false || eliminateFatigue,
+        };
+        if (psychicFatigue.value !== 0) {
+            ChatMessage.create({
+                speaker: ChatMessage.getSpeaker({ actor: this }),
+                flavor: game.i18n.format("abfalter.autoCombat.dialog.psychicPotentialFatigue.title", {
+                    fatiguePen: psychicFatigue.immune ? 0 : psychicFatigue.value,
+                }),
+            });
+            this.update({
+                system: {
+                    psychicPoint: {
+                        value: Math.max(psychicPoint.value - psychicFatigue.value, 0),
+                    },
+                },
+            });
+
+            if (!psychicFatigue.immune) {
+                this.applyFatigue(Math.max(psychicFatigue.value - psychicPoint.value, 0));
+            }
+        }
+        if (eliminateFatigue) {
+            this.update({
+                system: {
+                    psychicPoint: {
+                        value: psychicPoint.value - 1,
+                    },
+                },
+            });
+        }
+
+        return psychicFatigue.value;
+    }
+
+    /**
+     * apply the psychic points caused by using a power in the game.
+     * It checks if the actor has immunity to fatigue and calculates the fatigue value based on the power's effects and the psychic difficulty.
+     * If the actor is not immune to fatigue, it applies the fatigue value to the actor's characteristics.
+     *
+     * @param {object} power - The power for which the psychic fatigue is being evaluated.
+     * @param {number} powerLevel - The difficulty level of the psychic power.
+     * @param {boolean} eliminateFatigue - Whether to apply the fatigue value or not to the actor's characteristics.
+     *
+     * @returns {number} The calculated psychic fatigue value.
+     */
+    async applyPsychicPoints(PPPs) {
+        const { psychicPoint } = this.system;
+
+        this.update({
+            system: {
+                psychicPoint: {
+                    value: Math.max(psychicPoint.value - PPPs, 0),
+                },
+            },
+        });
+    }
+
+    /**
      * Applies damage to a supernatural shield.
      * If the damage reduces the shield's points to zero or below, the shield is deleted and the remaining damage is recalculated and applied to the actor.
      *
      * @param {string} supShieldId - The ID of the supernatural shield to apply damage to.
      * @param {number} damage - The amount of damage to apply to the shield.
-     * @param {boolean} [dobleDamage] - Whether to apply double damage or not. Default is `false`.
+     * @param {boolean} [doubleDamage] - Whether to apply double damage or not. Default is `false`.
      * @param {object} [newCombatResult] - Additional combat result data used to calculate damage to the actor if the shield breaks.
      *
      * @returns {void}
      */
     async applyDamageSupernaturalShield(damage, doubleDamage, newCombatResult) {
+        
         const shieldValue = this.system.shield.value;
-        const newShieldPoints = doubleDamage ? shieldValue - damage * 2 : shieldValue - damage;
+        const newShieldPoints = doubleDamage ? (shieldValue - damage.final * 2) : (shieldValue - damage.final);
         if (newShieldPoints > 0) {
             this.update({
                 system: {
@@ -546,7 +620,7 @@ export default class abfalterActor extends Actor {
                 system: {
                     shield: {
                         value: 0,
-                        max: 0
+                        max: 0,
                     },
                 },
             });
@@ -622,21 +696,21 @@ export default class abfalterActor extends Actor {
         });
     }
 
-        /**
+    /**
      * Updates the `lp` attribute of an `abfalterActor` object by subtracting the specified `damage` value.
      * @param {number} damage - The amount of damage to be subtracted from the `lp` attribute.
      * @returns {void}
      * @example
      */
-        applyAAMCrit(aam) {
-            const newCritAAM = this.system.aamField.crit + aam;
-    
-            this.update({
-                system: {
-                    aamField: { crit: newCritAAM },
-                },
-            });
-        }
+    applyAAMCrit(aam) {
+        const newCritAAM = this.system.aamField.crit + aam;
+
+        this.update({
+            system: {
+                aamField: { crit: newCritAAM },
+            },
+        });
+    }
 
     /**
      * Updates the value of the 'fatigue' of an abfalterActor object.

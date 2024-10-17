@@ -67,6 +67,14 @@ Handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
     return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
+Handlebars.registerHelper('neq', function (arg1, arg2, options) {
+    return (arg1 != arg2) ? options.fn(this) : options.inverse(this);
+});
+
+Handlebars.registerHelper('toLowerCase', function (str) {
+    return (str && typeof str === 'string' && str.toLowerCase()) || ''
+});
+
 Hooks.once('setup', function () {
     // Set active effect keys-labels
     abfalterEffectConfig.initializeChangeKeys();

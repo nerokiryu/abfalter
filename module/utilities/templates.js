@@ -16,7 +16,7 @@ export const templates = {
                 }
             },
             combatAttackDialog: {
-                main: 'systems/abfalter/templates/autoCombat/attackCombatDialog.html',
+                main: 'systems/abfalter/templates/autoCombat/attackCombatDialog.hbs',
                 parts: {
                     combat: 'systems/abfalter/templates/autoCombat/attackParts/combat.hbs',
                     mystic: 'systems/abfalter/templates/autoCombat/attackParts/mystic.hbs',
@@ -24,7 +24,7 @@ export const templates = {
                 }
             },
             combatDefenseDialog: {
-                main: 'systems/abfalter/templates/autoCombat/defenseCombatDialog.html',
+                main: 'systems/abfalter/templates/autoCombat/defenseCombatDialog.hbs',
                 parts: {
                     combat: 'systems/abfalter/templates/autoCombat/defenseParts/combat.hbs',
                     mystic: 'systems/abfalter/templates/autoCombat/defenseParts/mystic.hbs',

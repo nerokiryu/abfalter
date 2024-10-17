@@ -121,15 +121,24 @@
             }}
             {{/if}}
 
-            {{!--  {{#if (eq this.attacker.result.type 'psychic')}}
+            {{#if (eq this.attacker.result.type 'psychic')}}
             {{>
             "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
             class="psychic-potential"
             title=(localize 'abfalter.autoCombat.dialog.gm.psychicPotential.title')
             inputType="text"
             disabled=true
-            inputValue=this.attacker.result.values.psychicPotential
+            inputValue=this.attacker.result.values.psychicPotential.result
             }}
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+            class="power-level"
+            title=(localize 'abfalter.autoCombat.dialog.psychicPowerLevel.title')
+            inputType="text"
+            disabled=true
+            inputValue=this.attacker.result.values.powerLevel
+            }}
+
             {{>
             "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
             class="power-used"
@@ -144,9 +153,9 @@
             title=(localize 'abfalter.autoCombat.dialog.gm.projection.title')
             inputType="text"
             disabled=true
-            inputValue=this.attacker.result.values.psychicProjection
+            inputValue=this.attacker.result.values.psychicProjection.final
             }}
-            {{/if}} --}}
+            {{/if}}
 
         </div>
         <div class='values'>
@@ -158,7 +167,7 @@
             title=(localize 'abfalter.autoCombat.dialog.weapon.damageType.title')
             inputType="text"
             disabled=true
-            inputValue=(localize (concat 'abfalter.armoryTab.' this.attacker.result.values.damage.type))
+            inputValue=(localize (concat 'abfalter.armoryTab.' (toLowerCase this.attacker.result.values.damage.type)))
             }}
             {{>
             "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
@@ -319,7 +328,7 @@
                   inputType="text"
                   title=(localize 'abfalter.autoCombat.dialog.defenseType.title')
                   disabled=true
-                  inputValue=(localize (concat 'abfalter.armoryTab.' this.attacker.result.values.damage.type))
+                  inputValue=(localize (concat 'abfalter.armoryTab.' (toLowerCase this.attacker.result.values.damage.type)))
                 }}
                 {{#if (eq this.defender.result.values.defenseType 'dodge')}}
                   {{>
@@ -368,7 +377,7 @@
                 }}
               {{/if}}
 
-              {{!-- {{#if (eq this.defender.result.type 'psychic')}}
+              {{#if (eq this.defender.result.type 'psychic')}}
                 {{#unless (eq this.defender.result.values.psychicPotential 0)}}
                   {{>
                   "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
@@ -376,7 +385,15 @@
                     title=(localize 'abfalter.autoCombat.dialog.gm.psychicPotential.title')
                     inputType="text"
                     disabled=true
-                    inputValue=this.defender.result.values.psychicPotential
+                    inputValue=this.defender.result.values.psychicPotential.result
+                  }}
+                  {{>
+                  "systems/abfalter/templates/autoCombat/common/ui/vertical-titled-input.hbs"
+                  class="power-level"
+                  title=(localize 'abfalter.autoCombat.dialog.psychicPowerLevel.title')
+                  inputType="text"
+                  disabled=true
+                  inputValue=this.defender.result.values.powerLevel
                   }}
                 {{/unless}}
                 {{>
@@ -393,9 +410,9 @@
                   title=(localize 'abfalter.autoCombat.dialog.gm.projection.title')
                   inputType="text"
                   disabled=true
-                  inputValue=this.defender.result.values.psychicProjection
+                  inputValue=this.defender.result.values.psychicProjection.final
                 }}
-              {{/if}} --}}
+              {{/if}}
             </div>
 
             <div class='values'>
@@ -466,7 +483,7 @@
                   {{>
                   "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
                     class="double-damage"
-                    title=(localize 'abfalter.autoCombat.dialog.dobleDamage.title')
+                    title=(localize 'abfalter.autoCombat.dialog.doubleDamage.title')
                     inputType="checkbox"
                     disabled=false
                     inputName="defender.supernaturalShield.doubleDamage"
@@ -619,7 +636,7 @@
           </button>
         </div>
       {{/"systems/abfalter/templates/autoCombat/common/ui/group-body.hbs"}}
-    {{else}}
+    {{else if (and this.attacker.isReady this.defender.isReady)}}
       <button class='abf-button calculate-attack'>
           {{localize 'abfalter.autoCombat.dialog.calculateButton.title'}}
       </button>

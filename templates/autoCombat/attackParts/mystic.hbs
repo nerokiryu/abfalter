@@ -48,18 +48,18 @@
   inputName='attacker.mystic.resistanceEffect.types'
 }}
 {{#each this.attacker.mystic.resistanceEffect.types}}
-  <option {{#if (eq ../this.attacker.mystic.resistanceEffect.type this)}}selected{{/if}} value='{{this}}'>{{localize (concat 'abfalter.autoCombat.dialog.resistanceEffect.' this '.title')}}</option>
+  <option {{#if (eq ../this.attacker.mystic.resistanceEffect.type this)}}selected{{/if}} value='{{this}}'>{{localize (concat 'abfalter.autoCombat.dialog.resistanceEffect.' (toLowerCase this) '.title')}}</option>
 {{/each}}
 {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
 {{/unless}}
 
-{{!-- {{> 'systems/abfalter/templates/autoCombat/common/ui/custom-select-choices.hbs'
+{{> 'systems/abfalter/templates/autoCombat/common/ui/custom-select-choices.hbs'
   disabled=this.attackSent
-  choices=config.iterables.combat.weapon.criticTypesWithNone
+  choices=config.damageTypeSpiritDropdown
   title=(localize "abfalter.autoCombat.dialog.weapon.damageType.title")
   inputName='attacker.mystic.weaponType'
   inputValue=this.attacker.mystic.damage.type
-}} --}}
+}}
 
 {{>
 "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"

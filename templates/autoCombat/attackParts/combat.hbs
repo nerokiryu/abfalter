@@ -58,8 +58,8 @@
         disabled=this.attackSent
         inputName='attacker.combat.weaponType'
         }}
-        <option {{#if (eq this.attacker.combat.weapon.system.primDmgT this.attacker.combat.damage.type)}}selected{{/if}} value='{{this.attacker.combat.weapon.system.primDmgT}}'>{{localize (concat 'abfalter.armoryTab.' this.attacker.combat.weapon.system.primDmgT)}}</option>
-        <option {{#if (eq this.attacker.combat.weapon.system.secDmgT this.attacker.combat.damage.type)}}selected{{/if}} value='{{this.attacker.combat.weapon.system.secDmgT}}'>{{localize (concat 'abfalter.armoryTab.' this.attacker.combat.weapon.system.secDmgT)}}</option>
+        <option {{#if (eq this.attacker.combat.weapon.system.primDmgT this.attacker.combat.damage.type)}}selected{{/if}} value='{{this.attacker.combat.weapon.system.primDmgT}}'>{{localize (concat 'abfalter.armoryTab.' (toLowerCase this.attacker.combat.weapon.system.primDmgT))}}</option>
+        <option {{#if (eq this.attacker.combat.weapon.system.secDmgT this.attacker.combat.damage.type)}}selected{{/if}} value='{{this.attacker.combat.weapon.system.secDmgT}}'>{{localize (concat 'abfalter.armoryTab.' (toLowerCase this.attacker.combat.weapon.system.secDmgT))}}</option>
         {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
     {{else}}
         {{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
@@ -67,7 +67,7 @@
         disabled=true
         inputName='attacker.combat.weaponType'
         }}
-        <option selected value='{{this.attacker.combat.weapon.system.primDmgT}}'>{{localize (concat 'abfalter.armoryTab.' this.attacker.combat.weapon.system.primDmgT)}}</option>
+        <option selected value='{{this.attacker.combat.weapon.system.primDmgT}}'>{{localize (concat 'abfalter.armoryTab.' (toLowerCase this.attacker.combat.weapon.system.primDmgT))}}</option>
         {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
     {{/unless}}
     {{/unless}}

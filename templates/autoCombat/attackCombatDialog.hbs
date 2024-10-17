@@ -1,0 +1,30 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <span> this is the attack sheet </span>
+    <span> where you set how you attack </span>
+{{#if this.allowed}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="combat">{{localize "combat"}}</a>
+        {{#if this.attacker.mystic.spells}}<a class="item" data-tab="mystic">{{localize "mystic"}}</a>{{/if}}
+        {{#if this.attacker.psychic.powers}}<a class="item" data-tab="psychic">{{localize "psychic"}}</a>{{/if}}
+
+    </nav>
+
+    <section class="sheet-body">
+        <div class="tab combat" data-group="primary" data-tab="combat">
+{{> systems/abfalter/templates/autoCombat/attackParts/combat.hbs }}
+        </div>
+        <div class="tab mystic" data-group="primary" data-tab="mystic">
+{{> systems/abfalter/templates/autoCombat/attackParts/mystic.hbs }}
+        </div>
+        <div class="tab psychic" data-group="primary" data-tab="psychic">
+{{> systems/abfalter/templates/autoCombat/attackParts/psychic.hbs }}
+        </div>
+    </section>
+
+{{else}}
+    <div class='waitingRow'>
+        <span> Time to wait for permission :)</span>
+    </div>
+{{/if}}
+
+</form>

@@ -1,2 +1,162 @@
 <span> this is the psychic html </span>
 <span> where you set how you attack psychically </span>
+
+{{#if (gt this.defender.psychic.freePsychicPoints 0) }}
+<div class='columns'>
+    <div>
+        {{>
+        "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+        title=(localize 'abfalter.autoCombat.dialog.psychicProjection.ppp.title')
+        inputName="defender.psychic.psychicProjection.ppp"
+        inputValue=this.defender.psychic.psychicProjection.ppp
+        }}
+    </div>
+</div>
+{{/if}}
+
+{{>
+"systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+title=(localize 'abfalter.autoCombat.dialog.psychicProjection.title')
+disabled=this.attackSent
+inputName="defender.psychic.psychicProjection.special"
+inputValue=this.defender.psychic.psychicProjection.special
+hasSecondaryInput=true
+disableSecondaryInput=true
+secondaryInputName="defender.psychic.psychicProjection.final"
+secondaryInputValue=this.defender.psychic.psychicProjection.final
+}}
+
+
+
+{{#if this.defender.psychic.supernaturalShield.newShield}}
+
+    {{#if (gt this.defender.psychic.freePsychicPoints 0) }}
+    <div class='columns'>
+        <div>
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+            title=(localize 'abfalter.autoCombat.dialog.psychicPotential.ppp.title')
+            disabled=this.psychicPotentialSent
+            inputName="defender.psychic.psychicPotential.ppp"
+            inputValue=this.defender.psychic.psychicPotential.ppp
+            }}
+        </div>
+    </div>
+    {{/if}}
+    {{>
+    "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+    title=(localize 'abfalter.autoCombat.dialog.psychicPotential.title')
+    disabled=this.psychicPotentialSent
+    inputName="defender.psychic.psychicPotential.special"
+    inputValue=this.defender.psychic.psychicPotential.special
+    hasSecondaryInput=true
+    disableSecondaryInput=true
+    secondaryInputName="defender.psychic.psychicPotential.final"
+    secondaryInputValue=this.defender.psychic.psychicPotential.final
+    }}
+
+    {{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+    title=(localize 'abfalter.autoCombat.dialog.psychicPower.title')
+    disabled=this.psychicPotentialSent
+    inputName='defender.psychic.powerUsed'
+    }}
+    {{#each this.defender.psychic.powers}}
+    <option {{#if (eq this._id ../this.defender.psychic.powerUsed)}}selected{{/if}} value='{{this._id}}'>{{this.name}}
+    </option>
+    {{/each}}
+    {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+
+    {{#unless (eq this.defender.psychic.attainablePowerLevels.length 0)}}
+    {{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+    title=(localize 'abfalter.autoCombat.dialog.psychicPowerLevel.title')
+    disabled=this.attackSent
+    inputName='defender.psychic.powerLevel'
+    }}
+    {{#each this.defender.psychic.attainablePowerLevels}}
+    <option {{#if (eq ../this.defender.psychic.powerLevel this)}}selected{{/if}} value='{{this}}'>{{localize (concat 'abfalter.autoCombat.dialog.powerLevel.' this '.title')}}</option>
+    {{/each}}
+    {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+    {{/unless}}
+
+    {{#if (gt this.defender.psychic.freePsychicPoints 0) }}
+    <div class='columns'>
+        <div>
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+            title=(localize 'abfalter.autoCombat.dialog.eliminateFatigue.title')
+            inputType="checkbox"
+            inputName="defender.psychic.eliminateFatigue"
+            inputValue=(eq this.defender.psychic.eliminateFatigue true)
+            }}
+        </div>
+    </div>
+    {{/if}}
+
+    {{!-- {{#unless (eq this.defender.actor.system.psychic.mentalPatterns.length 0)}}
+    <div class='columns'>
+        <div>
+            {{>
+            "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+            title=(localize 'abfalter.autoCombat.dialog.mentalPatternImbalance.title')
+            inputType="checkbox"
+            inputName="defender.psychic.mentalPatternImbalance"
+            inputValue=(eq this.defender.psychic.mentalPatternImbalance true)
+            }}
+        </div>
+    </div>
+    {{/unless}} --}}
+
+{{else}}
+
+    {{!-- 
+    {{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+        title=(localize 'abfalter.autoCombat.dialog.psychicShield.title')
+        disabled=this.defenseSent
+        inputName='defender.psychic.supernaturalShield.shieldUsed'
+    }}
+        {{#each_when this.defender.actor.system.combat.supernaturalShields "system" "type" "" "psychic"}}
+        {{#if (is "eq" this.system.origin ../this.defender.actor.uuid)}}
+            <option {{#if (is "eq" this._id ../this.defender.psychic.supernaturalShield.shieldUsed)}}selected{{/if}} value='{{this._id}}'>{{this.name}}</option>
+        {{/if}}
+        {{/each_when}}
+    {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}} --}}
+
+    {{>
+    "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+        title=(localize "abfalter.autoCombat.dialog.shieldValue.title")
+        disabled=this.defenseSent
+        inputName="defender.psychic.supernaturalShield.shieldValue"
+        inputValue=this.defender.psychic.supernaturalShield.shieldValue
+    }}
+{{/if}}
+
+<div class='columns'>
+  <div>
+    {{>
+      "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+      title=(localize 'abfalter.autoCombat.dialog.newShield.title')
+      inputType="checkbox"
+      inputName="defender.psychic.supernaturalShield.newShield"
+      inputValue=(eq defender.psychic.supernaturalShield.newShield true)
+    }}
+  </div>
+</div>
+
+{{#if this.defenseSent}}
+  <div class='defense-sent'>
+    {{>'systems/abfalter/templates/autoCombat/common/ui/loading-indicator.hbs' class="big"}}
+    <p class='label'>
+      {{localize 'abfalter.autoCombat.dialog.defenseSent.title'}}
+    </p>
+  </div>
+{{else}}
+    {{#if (or this.psychicPotentialSent (eq this.defender.psychic.supernaturalShield.newShield false))}}
+        <button class='abf-button sendPsychicDefense'>
+            {{localize 'abfalter.autoCombat.dialog.defenseButton.title'}}
+        </button>
+    {{else}}
+        <button class='abf-button' name='defender.psychic.rollPsychicPotential'>
+            {{localize 'abfalter.autoCombat.dialog.rollPsychicPotentialButton.title'}}
+        </button>
+    {{/if}}
+{{/if}}

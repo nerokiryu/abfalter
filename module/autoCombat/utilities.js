@@ -9,6 +9,16 @@ export const assertCurrentScene = () => {
     }
 };
 
+export const assertGMActive = () => {
+    const gameCopy = game;
+    console.log(gameCopy.users);
+    if (!gameCopy.users?.find(u => u.isGM && u.active)) {
+        const msg = gameCopy.i18n.localize("abfalter.dialogs.noGMActive");
+        genericDialogs.prompt(msg);
+        throw new Error(msg);
+    }
+};
+
 export function getSelectedToken(game) {
     const selectedTokens = game.canvas.tokens?.controlled ?? [];
     if (selectedTokens.length !== 1) {
@@ -92,36 +102,39 @@ export const damageTypeCheck = (spell, spellGrade) => {
         }
     }
 
+    if (damageType === undefined) {
+        damageType = "NONE";
+    }
+
     return damageType;
 };
 
-export const MysticShieldCheck = (spell, spellGrade) => {
-    const spellUsedEffect = spell?.system.description ?? "";
-    const spellGradeUsedEffect = spell?.system[spellGrade].rollDesc ?? "";
+export const shieldCheck = (spell, spellGrade) => {
+    const spellUsedEffect = spell ?? "";
+    const spellGradeUsedEffect = spellGrade ?? "";
     let shieldLifePoint = undefined;
-    const shieldLifePoints = {lp:  "Life Points" };
+    const shieldLifePoints = { lp: "Life Points", shortLp: "LP" };
 
     function updateShieldLifePoint(regExp, effect) {
         shieldLifePoint = parseInt(effect.match(regExp)[0].match(/\d+/)[0]) ?? 0;
-
     }
 
     for (const key in shieldLifePoints) {
         let regExp = new RegExp(`\\d+ ${shieldLifePoints[key]}`, "i");
         if (regExp.test(spellUsedEffect)) {
-            updateShieldLifePoint(regExp, spellGradeUsedEffect);
+            updateShieldLifePoint(regExp, spellUsedEffect);
         }
         if (regExp.test(spellGradeUsedEffect)) {
             updateShieldLifePoint(regExp, spellGradeUsedEffect);
         }
     }
-
+    console.log(shieldLifePoint)
     return shieldLifePoint;
 };
 
 export const resistanceEffectCheck = (spell, spellGrade) => {
-    const spellUsedEffect = spell?.system.description ?? "";
-    const spellGradeUsedEffect = spell?.system[spellGrade].rollDesc ?? "";
+    const spellUsedEffect = spell ?? "";
+    const spellGradeUsedEffect = spellGrade ?? "";
     const resistanceEffect = { effects: [], value: 0, type: undefined, types: [], check: false };
     const resistances = { Physical: "PhR", Disease: "DR", Poison: "PsnR", Magic: "MR", Psychic: "PsyR" };
 
@@ -130,7 +143,7 @@ export const resistanceEffectCheck = (spell, spellGrade) => {
         resistanceEffect.type = type;
         resistanceEffect.types.push(type);
         resistanceEffect.value = parseInt(effect.match(regExp)[0].match(/\d+/)[0]) ?? 0;
-        resistanceEffect.effects = [spellUsedEffect,spellGradeUsedEffect];
+        resistanceEffect.effects = [spellUsedEffect, spellGradeUsedEffect];
     }
 
     for (const key in resistances) {
@@ -160,7 +173,7 @@ export const otherResistanceEffectCheck = (effect) => {
         resistanceEffect.type = type;
         resistanceEffect.types.push(type);
         resistanceEffect.value = parseInt(effect.match(regExp)[0].match(/\d+/)[0]) ?? 0;
-        resistanceEffect.effects.push(effect)
+        resistanceEffect.effects.push(effect);
     }
 
     for (const key in resistances) {
@@ -224,20 +237,20 @@ export const evaluateCast = (spellCasting) => {
         return false;
     }
     if (canCast.innate && casted.innate && canCast.prepared && casted.prepared) {
-        ui.notifications.warn(i18n.localize("dialogs.spellCasting.warning.mustChoose"));
+        ui.notifications.warn(i18n.localize("abfalter.autoCombat.dialog.spellCasting.warning.mustChoose"));
         return true;
     }
     if (canCast.innate && casted.innate) {
         return;
     } else if (!canCast.innate && casted.innate) {
-        ui.notifications.warn(i18n.localize("dialogs.spellCasting.warning.innateMagic"));
+        ui.notifications.warn(i18n.localize("abfalter.autoCombat.dialog.spellCasting.warning.innateMagic"));
         return true;
     } else if (canCast.prepared && casted.prepared) {
         return false;
     } else if (!canCast.prepared && casted.prepared) {
-        return ui.notifications.warn(i18n.localize("dialogs.spellCasting.warning.preparedSpell"));
+        return ui.notifications.warn(i18n.localize("abfalter.autoCombat.dialog.spellCasting.warning.preparedSpell"));
     } else if (zeon.accumulated < zeon.cost) {
-        ui.notifications.warn(i18n.localize("dialogs.spellCasting.warning.zeonAccumulated"));
+        ui.notifications.warn(i18n.localize("abfalter.autoCombat.dialog.spellCasting.warning.zeonAccumulated"));
         return true;
     } else return false;
 };
@@ -270,4 +283,24 @@ export const calculateDamage = (attack, defense, armor, damage, halvedAbs = fals
     const RoundDownDamage = Math.ceil(tempDamage);
 
     return Math.max(RoundDownDamage, 0);
+};
+
+export const addAttainablePowerLevels = (powerLevels, power, result) => {
+    for (let key in power.system) {
+        var match = key.match(/^effect(\d+)$/);
+        if (match) {
+            if (match[1] <= result) {
+                powerLevels.push(key);
+            }
+        }
+    }
+};
+
+export const psychicFatigueCheck = (effect) => {
+    let regex = /Fatigue/i
+    if (regex.test(effect)) {
+        return parseInt(effect.match(/\d+/)[0]) ?? 0;
+    } else {
+        return 0;
+    }
 };

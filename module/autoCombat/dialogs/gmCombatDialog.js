@@ -1,5 +1,5 @@
 import { templates } from "../../utilities/templates.js";
-import { findVar, MysticShieldCheck, calculateDamage } from "../utilities.js";
+import { findVar, shieldCheck, calculateDamage } from "../utilities.js";
 
 import { rollCharacteristic, abilityRoll, rollCombatWeapon, openRollFunction, fumbleRollFunction, rollResistance, rollBreakage } from "../../diceroller.js";
 
@@ -30,7 +30,6 @@ const getInitialData = (attacker, defender, options = {}) => {
             },
             isReady: false,
         },
-        test: true,
     };
 };
 export class gmCombatDialog extends FormApplication {
@@ -39,7 +38,6 @@ export class gmCombatDialog extends FormApplication {
         this.hooks = hooks;
         this.data = getInitialData(attacker, defender, options);
 
-        //this.data.test = true;
         this.render(true);
     }
     static get defaultOptions() {
@@ -123,7 +121,7 @@ export class gmCombatDialog extends FormApplication {
         html.find(".show-results").click(async () => {
             this.showResults();
         });
-        html.find(".roll-resistance").click(async() => {
+        html.find(".roll-resistance").click(async () => {
             const { value, type } = this.data.attacker.result.values?.resistanceEffect;
 
             const resistanceRoll = await this.rollResist(type, value, html);
@@ -137,19 +135,18 @@ export class gmCombatDialog extends FormApplication {
         });
 
         html.find(".roll-crit").click(async () => {
-            
             const resistanceRoll = await this.rollResist("Physical", 0, html);
             const critRoll = await this.rollCritic(this.data.calculations.critLevel, html);
             const critResult = critRoll[0].total - resistanceRoll._total;
-            console.log ("critResult")
-            console.log (critResult)
+            console.log("critResult");
+            console.log(critResult);
             this.data.calculations.critResult = critResult;
             if (critResult > 0) {
                 let location = "";
                 if (critResult > 50) {
-                    location = await this.rollCritLocation()
+                    location = await this.rollCritLocation();
                 }
-                
+
                 this.data.calculations.location = location;
                 this.data.calculations.critResultRound = this.calculateCritResultRound(critResult);
             }
@@ -171,65 +168,65 @@ export class gmCombatDialog extends FormApplication {
 
     async rollCritLocation() {
         const roll = await new Roll("1d100", this.data.attacker.actor).roll();
-        let result = 1
-        switch(true){
-            case (roll.total < 11):
-                result = 1
+        let result = 1;
+        switch (true) {
+            case roll.total < 11:
+                result = 1;
                 break;
-            case (roll.total < 21):
-                result = 11
+            case roll.total < 21:
+                result = 11;
                 break;
-            case (roll.total < 31):
-                result = 21
+            case roll.total < 31:
+                result = 21;
                 break;
-            case (roll.total < 36):
-                result = 31
+            case roll.total < 36:
+                result = 31;
                 break;
-            case (roll.total < 49):
-                result = 36
+            case roll.total < 49:
+                result = 36;
                 break;
-            case (roll.total < 51):
-                result = 49
+            case roll.total < 51:
+                result = 49;
                 break;
-            case (roll.total < 55):
-                result = 51
-                break;  
-            case (roll.total < 59):
-                result = 55
-                break;  
-            case (roll.total < 61):
-                result = 59
-                break;  
-            case (roll.total < 65):
-                result = 61
-                break;  
-            case (roll.total < 69):
-                result = 65
-                break;  
-            case (roll.total < 71):
-                result = 69
-                break;  
-            case (roll.total < 75):
-                result = 71
-                break;  
-            case (roll.total < 79):
-                result = 75
+            case roll.total < 55:
+                result = 51;
                 break;
-            case (roll.total < 81):
-                result = 79
-                break;  
-            case (roll.total < 85):
-                result = 81
-                break; 
-            case (roll.total < 89):
-                result = 85
-                break; 
-            case (roll.total < 91):
-                result = 89
-                break; 
-            case (roll.total >= 91):
-                result = 91
-                break; 
+            case roll.total < 59:
+                result = 55;
+                break;
+            case roll.total < 61:
+                result = 59;
+                break;
+            case roll.total < 65:
+                result = 61;
+                break;
+            case roll.total < 69:
+                result = 65;
+                break;
+            case roll.total < 71:
+                result = 69;
+                break;
+            case roll.total < 75:
+                result = 71;
+                break;
+            case roll.total < 79:
+                result = 75;
+                break;
+            case roll.total < 81:
+                result = 79;
+                break;
+            case roll.total < 85:
+                result = 81;
+                break;
+            case roll.total < 89:
+                result = 85;
+                break;
+            case roll.total < 91:
+                result = 89;
+                break;
+            case roll.total >= 91:
+                result = 91;
+                break;
         }
         const hitLocation = game.i18n.localize("abfalter.autoCombat.dialog.crit.location." + result + ".title");
 
@@ -268,11 +265,11 @@ export class gmCombatDialog extends FormApplication {
 
         this.mysticCastEvaluateIfAble();
         this.accumulateDefensesIfAble();
-        await this.newSupernaturalShieldIfBeAble();
+        this.newSupernaturalShieldIfBeAble();
 
         if (this.canApplyDamage) {
             this.defenderActor.applyDamage(this.data.calculations.damage);
-            if(this.data.calculations.critResult != undefined && this.data.calculations.critResult > 0){
+            if (this.data.calculations.critResult != undefined && this.data.calculations.critResult > 0) {
                 this.defenderActor.applyAAMCrit(-this.data.calculations.critResult);
             }
         } else {
@@ -296,18 +293,20 @@ export class gmCombatDialog extends FormApplication {
         }
     }
 
-    async newSupernaturalShieldIfBeAble() {
+    newSupernaturalShieldIfBeAble() {
+        console.log(this.data.defender.result);
         const { supShield } = this.data.defender.result?.values;
         if (this.data.defender.result?.type === "mystic" && supShield.create) {
-            const shieldLP = MysticShieldCheck(this.data.defender.result.spell, this.data.defender.result.values?.spellGrade);
+            const shieldLP = shieldCheck(this.data.defender.result.spell.system.description, this.data.defender.result.spell.system[this.data.defender.result.values?.spellGrade].rollDesc);
             this.defenderActor.newSupernaturalShield(shieldLP);
         } else if (this.data.defender.result?.type === "psychic" && supShield.create) {
-            /*             const shieldLP = PyschicShieldCheck(this.data.defender.result.spell, this.data.defender.result.values?.spellGrade)
-            this.defenderActor.newSupernaturalShield(shieldLP); */
+            const shieldLP = shieldCheck(this.data.defender.result.power.system.description, this.data.defender.result.power.system[this.data.defender.result.values?.powerLevel]);
+            this.defenderActor.newSupernaturalShield(shieldLP);
         }
     }
 
     applyDamageSupernaturalShieldIfBeAble() {
+        console.log("applyDamageSupernaturalShieldIfBeAble");
         const { doubleDamage, immuneToDamage } = this.data.defender.supernaturalShield;
         const defenderIsWinner = this.data.calculations.winner == this.data.defender.token;
         const damage = this.data.attacker.result?.values.damage;
@@ -326,6 +325,9 @@ export class gmCombatDialog extends FormApplication {
                 newCombatResult.halvedAbsorption = defender.result.type === "resistance" ? defender.result.values.surprised : false;
             }
 
+            console.log(damage);
+            console.log(newCombatResult);
+            console.log(doubleDamage);
             this.defenderActor.applyDamageSupernaturalShield(damage, doubleDamage, newCombatResult);
         }
     }
@@ -348,8 +350,9 @@ export class gmCombatDialog extends FormApplication {
         const { attacker } = this.data;
         this.data.attacker.result = result;
         console.log("result*-------------------------------------------------------");
+        console.log(attacker.result);
 
-        this.data.attacker.rollResult = await this.resolveRoll(attacker.result.roll);
+        attacker.rollResult = await this.resolveRoll(attacker.result.roll);
         console.log(attacker.result.roll);
         console.log(this.data.attacker.result.roll);
         console.log(attacker.result.roll.length);
@@ -365,10 +368,9 @@ export class gmCombatDialog extends FormApplication {
         }
 
         if (result.type === "psychic") {
-            const { psychicPowers } = this.attackerActor.items.filter((item) => item.type === "power");
-
-            attacker.result.power = psychicPowers.find((w) => w[0]._id === result.values.powerUsed);
+            attacker.result.power = attacker.result.values.power;
         }
+
         this.render();
     }
     async updateDefenderData(result) {
@@ -394,6 +396,7 @@ export class gmCombatDialog extends FormApplication {
     }
 
     async showResults() {
+        console.log(this.data.defender.token.texture.src);
         const data = {
             attacker: {
                 name: this.data.attacker.token.name,
@@ -402,33 +405,36 @@ export class gmCombatDialog extends FormApplication {
             defender: {
                 name: this.data.defender.token.name,
                 img: this.data.defender.token.texture.src,
+                defenseType: this.data.defender.result.type
             },
             result: this.data.calculations?.difference,
             canCounter: this.data.calculations?.canCounter,
             isCrit: this.data.calculations.isCrit,
+            defenseType: this.data.defender.result.type,
+            attackType: this.data.attacker.result.type,
+            rawDamage: this.data.attacker.result.values.damage.final,
+            shieldBreakDamage: this.data.calculations?.shieldBreakDamage || 0,
         };
-
+        console.log(data);
         if (this.data.calculations?.canCounter) {
             data.bonus = this.data.calculations.counterAttackBonus;
-        } else {
-            data.damage = this.data.calculations?.damage;
-            if (this.data.calculations.isCrit) {
-                data.critLevel = this.data.calculations.critLevel;
-                data.critResult = this.data.calculations.critResult;
-                if (data.critResult > 0) {
-                    data.critResultRound = this.data.calculations.critResultRound;
-                    data.location = this.data.calculations.location;
-                }
-                
+        }
+        data.damage = this.data.calculations?.damage;
+        if (this.data.calculations.isCrit) {
+            data.critLevel = this.data.calculations.critLevel;
+            data.critResult = this.data.calculations.critResult;
+            if (data.critResult > 0) {
+                data.critResultRound = this.data.calculations.critResultRound;
+                data.location = this.data.calculations.location;
             }
         }
-        if(this.data.ui.resistanceRoll){
-          data.resistanceEffect =  this.data.attacker.result.values?.resistanceEffect.effects.join(' -> ')
-          data.resistanceResult = this.data.calculations.resistanceResult
-          
+        if (this.data.ui.resistanceRoll) {
+            data.resistanceEffect = this.data.attacker.result.values?.resistanceEffect.effects.join(" -> ");
+            data.resistanceResult = this.data.calculations.resistanceResult;
         }
 
         console.log("result should be here");
+        console.log(data.defender.defenseType);
         await renderTemplate(templates.chat.combatResult, data).then((content) => {
             ChatMessage.create({
                 content,
@@ -437,18 +443,18 @@ export class gmCombatDialog extends FormApplication {
     }
 
     calculateCritResultRound(critResult) {
-        let result = 1
+        let result = 1;
         switch (true) {
-            case (critResult < 51):
+            case critResult < 51:
                 result = 1;
                 break;
-            case (critResult < 101):
+            case critResult < 101:
                 result = 51;
                 break;
-            case (critResult < 151):
+            case critResult < 151:
                 result = 101;
                 break;
-            case (critResult >= 151):
+            case critResult >= 151:
                 result = 151;
                 break;
             default:
@@ -476,12 +482,14 @@ export class gmCombatDialog extends FormApplication {
         const temp = await this.resolveRoll(this.data.attacker.result.roll);
         this.data.attacker.rollResult = temp; // Update the modifier
         console.log(this.data.attacker.rollResult);
+        console.log(this.data.attacker.token);
         this._updateObject(event); // Call the update method with the updated data
     }
     async _onUpdateDefenseRoll(event) {
         event.preventDefault();
         const temp = await this.resolveRoll(this.data.defender.result.roll);
         this.data.defender.rollResult = temp; // Update the modifier
+        console.log(this.data.defender.token);
         this._updateObject(event); // Call the update method with the updated data
     }
     _onShieldDoubleDamageRoll(event) {
@@ -540,14 +548,33 @@ export class gmCombatDialog extends FormApplication {
                 const projectile = attacker.result.values.projectile;
 
                 if (combatResult.canCounterAttack && (!projectile.value || distance.check || (distance.enable && distance.value <= 1))) {
-                    this.data.calculations = {
-                        difference: attackerTotal - defenderTotal,
-                        armorResistance,
-                        canCounter: true,
-                        isCrit: false,
-                        winner,
-                        counterAttackBonus: combatResult.counterAttackBonus,
-                    };
+                    const shieldValue = defender.actor.system.shield.value - attacker.result.values.damage.final;
+                    console.log("qsdkldjlqs-----------------------");
+                    console.log(shieldValue);
+                    if (defender.result.type == "combat" || shieldValue > 0) {
+                        this.data.calculations = {
+                            difference: attackerTotal - defenderTotal,
+                            armorResistance,
+                            canCounter: true,
+                            isCrit: false,
+                            winner,
+                            counterAttackBonus: combatResult.counterAttackBonus,
+                        };
+                    } else {
+                        const shieldBreak = calculateCombatResult(attackerTotal, 0, armor, Math.abs(shieldValue), defender.result.type === "resistance" ? defender.result.surprised : false);
+                        console.log(shieldBreak);
+                        this.data.calculations = {
+                            difference: attackerTotal - defenderTotal,
+                            armorResistance,
+                            canCounter: true,
+                            isCrit: shieldBreak.damage >= defender.actor.system.lp.value / 2,
+                            critLevel: calculateCritLevel(defender, shieldBreak.damage),
+                            winner,
+                            counterAttackBonus: combatResult.counterAttackBonus,
+                            shieldBreakDamage: shieldBreak.damage,
+                        };
+                        console.log(this.data.calculations);
+                    }
                 } else {
                     this.data.calculations = {
                         difference: attackerTotal - defenderTotal,
@@ -589,7 +616,7 @@ export const calculateCombatResult = (attack, defense, armor, damage, halvedAbso
     if (attack < defense) {
         return {
             canCounterAttack: true,
-            counterAttackBonus: Math.floor((defense - attack - 1) / 10) * 10,
+            counterAttackBonus: Math.floor(((defense - attack - 1) / 2)/5) * 5,
         };
     } else {
         const result = calculateDamage(attack, defense, armor, damage, halvedAbsorption);

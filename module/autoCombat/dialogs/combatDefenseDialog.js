@@ -1,5 +1,5 @@
 import { templates } from "../../utilities/templates.js";
-import { otherResistanceEffectCheck, resistanceEffectCheck, mysticCanCastEvaluate, evaluateCast } from "../utilities.js";
+import { addAttainablePowerLevels, otherResistanceEffectCheck, resistanceEffectCheck, mysticCanCastEvaluate, evaluateCast, damageTypeCheck } from "../utilities.js";
 import { rollCharacteristic, abilityRoll, rollCombatWeapon, openRollFunction, fumbleRollFunction, rollResistance, rollBreakage } from "../../diceroller.js";
 
 const getInitialData = (attacker, defender, options = {}) => {
@@ -81,18 +81,40 @@ const getInitialData = (attacker, defender, options = {}) => {
                 },
                 finalIntelligence: 0,
             },
-            resistance: {
-                surprised: false,
-            } /*,
+
             psychic: {
                 modifier: 0,
-                psychicProjection: attackerActor.data.data.psychic.psychicProjection.imbalance.defensive.final.value,
-                psychicPotential: { special: 0, final: attackerActor.data.data.psychic.psychicPotential.final.value },
+                freePsychicPoints: defenderActor.system.psychicPoint.value,
+                psychicProjection: {
+                    base: defenderActor.system.pproj.final,
+                    special: 0,
+                    ppp: 0,
+                    final: defenderActor.system.pproj.final,
+                },
+                psychicPotential: {
+                    base: defenderActor.system.ppotential.final,
+                    special: 0,
+                    ppp: 0,
+                    final: defenderActor.system.ppotential.final,
+                    result: 0,
+                },
+                power: undefined,
+                powers: undefined,
                 powerUsed: undefined,
-                critic: NoneWeaponCritic.NONE,
-                damage: 0
-            }*/,
+                powerLevel: 0,
+                attainablePowerLevels: [],
+                eliminateFatigue: false,
+                mentalPatternImbalance: false,
+                supernaturalShield: {
+                    shieldValue: 0,
+                    newShield: true,
+                },
+            },
+            resistance: {
+                surprised: false,
+            },
         },
+        psychicPotentialSent: false,
         defenseSent: false,
         allowed: false,
     };
@@ -103,11 +125,12 @@ export class combatDefenseDialog extends FormApplication {
         super(getInitialData(attacker, defender, options));
 
         this.data = getInitialData(attacker, defender, options);
-        const { combat, mystic } = this.data.defender;
-        const supernaturalShields = this.defenderActor.system.shield;
+        const { combat, mystic, psychic } = this.data.defender;
+
+        // COMBAT
 
         const weapons = defender.actor.items.filter((item) => item.type === "weapon"); //filters through actor items for weapons
-        this.data.defender.combat.weaponsList = weapons; //sends filtered weapons to form data
+        combat.weaponsList = weapons; //sends filtered weapons to form data
         if (weapons.length > 0) {
             const lastDefensiveWeaponUsed = this.defenderActor.getFlag("abfalter", "lastDefensiveWeaponUsed");
             if (weapons.find((w) => w._id === lastDefensiveWeaponUsed)) {
@@ -120,13 +143,15 @@ export class combatDefenseDialog extends FormApplication {
             combat.unarmed = true;
         }
 
+        // MYSTIC
+
         const spells = defender.actor.items.filter((item) => item.type === "spell"); //filters through actor items for spells
-        this.data.defender.mystic.spells = spells; //sends filtered spells to form data
+        mystic.spells = spells; //sends filtered spells to form data
         const aptitudeForMagicDevelopment = false;
 
         const intelligence = this.defenderActor.system.stats.Intelligence.final;
         const finalIntelligence = aptitudeForMagicDevelopment ? intelligence + 3 : intelligence;
-        this.data.defender.mystic.finalIntelligence = finalIntelligence;
+        mystic.finalIntelligence = finalIntelligence;
 
         if (spells.length > 0) {
             const lastOffensiveSpellUsed = this.defenderActor.getFlag("abfalter", "lastDefensiveSpellUsed");
@@ -140,7 +165,6 @@ export class combatDefenseDialog extends FormApplication {
             mystic.overrideMysticCast = spellCastingOverride || false;
             const spell = spells.find((w) => w._id === mystic.spellUsed);
             mystic.spell = spell;
-            //mystic.critic = spell?.system.critic.value ?? NoneWeaponCritic.NONE;
             const spellGrades = ["basic", "intermediate", "advanced", "arcane"];
             if (this.data.defender.mystic.spellCasting.override) {
                 mystic.attainableSpellGrades = spellGrades;
@@ -160,20 +184,38 @@ export class combatDefenseDialog extends FormApplication {
             }
         }
 
+        // PSYCHIC
+
+        const psychicPowers = defender.actor.items.filter((item) => item.type === "psychicMatrix");
+        psychic.powers = psychicPowers;
+
+        if (psychicPowers.length > 0) {
+            const lastDefensivePowerUsed = this.defenderActor.getFlag("abfalter", "lastDefensivePowerUsed");
+            if (psychicPowers.find((w) => w._id === lastDefensivePowerUsed)) {
+                psychic.powerUsed = lastDefensivePowerUsed;
+            } else {
+                psychic.powerUsed = psychicPowers.find((w) => w.system.action === "0")?._id;
+            }
+            const power = psychicPowers.find((w) => w._id === psychic.powerUsed);
+            psychic.power = power;
+            psychic.powers = psychicPowers;
+            const psychicBonus = power?.system.bonus ?? 0;
+            psychic.psychicPotential.final = psychic.psychicPotential.special + this.defenderActor.system.ppotential.final + parseInt(psychicBonus);
+            psychic.psychicPotential.base = this.defenderActor.system.ppotential.final;
+        }
+
+        //SHIELD
+
         if (this.defenderActor.system.shield.value > 0) {
             mystic.supernaturalShield = {
                 shieldValue: this.defenderActor.system.shield.value,
                 newShield: false,
             };
-
-            /*             if (psychicShield) {
-                psychic.supernaturalShield = {
-                    shieldValue: psychicShield?.system.shieldPoints,
-                    newShield: false,
-                };
-            } */
+            psychic.supernaturalShield = {
+                shieldValue: this.defenderActor.system.shield.value,
+                newShield: false,
+            };
         }
-
 
         // TBD: WAITING FOR A WAY TO KNOW IF USER CAN PERCEIVE MYST/PSY
         const perceiveMystic = true;
@@ -189,7 +231,9 @@ export class combatDefenseDialog extends FormApplication {
             }
         }
 
-        this.data.allowed = game.user?.isGm || (options.allowed ?? false);
+        console.log(this.defenderActor);
+
+        this.data.allowed = game.user?.isGM || (options.allowed ?? false);
         this.hooks = hooks;
         this.render(true);
     }
@@ -249,6 +293,37 @@ export class combatDefenseDialog extends FormApplication {
         html.find('input[name="defender.mystic.supernaturalShield.shieldValue"]').on("change", this._onMysticShieldValueChange.bind(this));
         html.find('input[name="defender.mystic.supernaturalShield.newShield"]').on("change", this._onMysticNewShieldChange.bind(this));
         html.find('input[name="defender.mystic.spellCasting.override"]').on("change", this._onMysticOverrideMysticCastChange.bind(this));
+
+        html.find('select[name="defender.psychic.powerUsed"]').on("change", this._onPsychicPowerSelectionChange.bind(this));
+        html.find('select[name="defender.psychic.powerLevel"]').on("change", this._onPsychicPowerLevelSelectionChange.bind(this));
+        html.find('input[name="defender.psychic.psychicPotential.special"]').on("change", this._onPsychicPotentialModifierChange.bind(this));
+        html.find('input[name="defender.psychic.psychicPotential.ppp"]').on("change", this._onPsychicPotentialPPPChange.bind(this));
+        html.find('input[name="defender.psychic.psychicProjection.special"]').on("change", this._onPsychicProjectionModifierChange.bind(this));
+        html.find('input[name="defender.psychic.psychicProjection.ppp"]').on("change", this._onPsychicProjectionPPPChange.bind(this));
+        html.find('input[name="defender.psychic.eliminateFatigue"]').on("change", this._onPsychicEliminateFatigueChange.bind(this));
+        html.find('input[name="defender.psychic.mentalPatternImbalance"]').on("change", this._onPsychicMentalPatternImbalanceChange.bind(this));
+        html.find('input[name="defender.psychic.supernaturalShield.shieldValue"]').on("change", this._onPsychicShieldValueChange.bind(this));
+        html.find('input[name="defender.psychic.supernaturalShield.newShield"]').on("change", this._onPsychicNewShieldChange.bind(this));
+
+        html.find('button[name="defender.psychic.rollPsychicPotential"]').click(async () => {
+            var finalMod = this.data.defender.psychic.psychicPotential.final + this.data.defender.psychic.psychicPotential.ppp * 20;
+
+            const flavor = game.i18n.format("abfalter.autoCombat.dialog.psychicPotential.roll.title", {
+                power: this.data.defender.psychic.power.name,
+            });
+
+            const roll = await abilityRoll(html, this.data.defender.actor, finalMod, flavor);
+
+            this.data.defender.psychic.psychicPotential.result = roll[roll.length - 1].total;
+            console.log("result");
+            console.log(this.data.defender.psychic.psychicPotential.result);
+
+            addAttainablePowerLevels(this.data.defender.psychic.attainablePowerLevels, this.data.defender.psychic.power, this.data.defender.psychic.psychicPotential.result);
+            this.data.defender.psychic.powerLevel = this.data.defender.psychic.attainablePowerLevels[this.data.defender.psychic.attainablePowerLevels.length - 1];
+
+            this.data.psychicPotentialSent = true;
+            this.render();
+        });
 
         html.find(".sendNormDefense").click(async (e) => {
             const {
@@ -334,7 +409,7 @@ export class combatDefenseDialog extends FormApplication {
             for (const key in defenderCombatMod) {
                 combatModifier += defenderCombatMod[key]?.value ?? 0;
             }
-
+            let finalMod = baseDefense + combatModifier;
             let damageType = this.data.attacker.damageType;
             let armorType = Object.keys(this.data.defender.actor.system.armor.body).filter((key) => key.toUpperCase().includes(damageType));
             this.data.defender.combat.armor = this.data.defender.actor.system.armor.body[armorType[0]];
@@ -344,7 +419,7 @@ export class combatDefenseDialog extends FormApplication {
             });
             //let formula = `1d100xa + ${weapon.system.finalAtk} + ${Math.floor(this.data.attacker.combat.fatigueUsed * 15)} + ${this.data.attacker.combat.modifier}`; //+ ${counterAttackBonus}
             //const roll = new abfalterRoll(formula, this.data.attacker.attackerActor);
-            const roll = rollCombatWeapon(html, this.data.defender.actor, combatModifier, flavor, weapon.system.complex);
+            const roll = rollCombatWeapon(html, this.data.defender.actor, finalMod, flavor, weapon.system.complex);
             const result = {
                 roll: roll,
                 type: "combat",
@@ -399,7 +474,7 @@ export class combatDefenseDialog extends FormApplication {
                     spellUsed,
                     spellGrade,
                     spellCasting,
-                    supernaturalShield: { shieldUsed, newShield },
+                    supernaturalShield: { shieldValue, newShield },
                 },
                 blindness,
             } = this.data.defender;
@@ -413,7 +488,7 @@ export class combatDefenseDialog extends FormApplication {
             }
 
             if (!newShield) {
-                supShield = { create: false, id: shieldUsed };
+                supShield = { create: false, value: shieldValue };
             } else if (spellUsed) {
                 this.defenderActor.setFlag("abfalter", "spellCastingOverride", spellCasting.override);
                 this.defenderActor.setFlag("abfalter", "lastDefensiveSpellUsed", spellUsed);
@@ -463,12 +538,92 @@ export class combatDefenseDialog extends FormApplication {
             this.render();
         });
 
-        html.find(".sendPsychicAttack").click(() => {
-            const { weapon, criticSelected, modifier, fatigueUsed, damage } = this.data.defender.combat; // from getInitial Data stuff
-            if (typeof damage !== "undefined") {
-                this.data.attackSent = true;
-                this.render();
+        html.find(".sendPsychicDefense").click(async () => {
+            const {
+                psychic: {
+                    psychicPotential,
+                    powerUsed,
+                    psychicProjection,
+                    eliminateFatigue,
+                    mentalPatternImbalance,
+                    powers,
+                    power,
+                    powerLevel,
+                    supernaturalShield: { shieldValue, newShield },
+                },
+                combat: { armor },
+                blindness,
+            } = this.data.defender;
+
+            let psychicFatigue, supShield;
+            const defenderCombatMod = {
+                modifier: { value: psychicProjection.special, apply: true },
+            };
+            if (psychicProjection.ppp > 0) {
+                defenderCombatMod.ppp = { value: psychicProjection.ppp * 20, apply: true };
             }
+            if (blindness) {
+                defenderCombatMod.blindness = { value: -80, apply: true };
+            }
+
+            let combatModifier = 0;
+            for (const key in defenderCombatMod) {
+                combatModifier += defenderCombatMod[key]?.value ?? 0;
+            }
+            let finalMod = psychicProjection.final + combatModifier;
+
+
+            if (!newShield) {
+                if (shieldValue === 0) {
+                    return ui.notifications.warn(game.i18n.localize("abfalter.autoCombat.dialog.warning.supernaturalShieldNotFound.psychic"));
+                }
+                supShield = { create: false, value: shieldValue };
+            } else if (power != undefined) {
+                this.defenderActor.setFlag("abfalter", "lastDefensivePowerUsed", powerUsed);
+                this.defenderActor.applyPsychicPoints(psychicPotential.ppp);
+                psychicFatigue = await this.defenderActor.evaluatePsychicFatigue(power, powerLevel, eliminateFatigue);
+
+                if (!psychicFatigue) {
+                    supShield = { create: true };
+                }
+            }
+
+            if (!psychicFatigue) {
+                this.defenderActor.applyPsychicPoints(psychicProjection.ppp);
+                const flavor = game.i18n.format("abfalter.autoCombat.dialog.psychicDefense.title", {
+                    power: power.name,
+                    target: this.data.attacker.token.name,
+                    potential: psychicPotential.result,
+                });
+                const roll = abilityRoll(html, this.data.defender.actor, finalMod, flavor);
+
+                const result ={
+                    type: "psychic",
+                    roll: roll,
+                    values: {
+                        modifier: combatModifier,
+                        powerUsed,
+                        powerName: power.name,
+                        power,
+                        powerLevel,
+                        powers,
+                        psychicProjection,
+                        psychicPotential,
+                        armor,
+                        psychicFatigue,
+                        supShield,
+                        defenderCombatMod,
+                    },
+                }
+
+                this.hooks.onDefense(result);
+                this.data.defenseSent = true;
+            } else {
+                this.data.defenseSent = true;
+                this.close();
+            }
+
+            this.render();
         });
     }
 
@@ -582,10 +737,135 @@ export class combatDefenseDialog extends FormApplication {
         this._updateObject(event); // Call the update method with the updated data
     }
 
+    _onPsychicPotentialModifierChange(event) {
+        event.preventDefault();
+        const modifierValue = event.target.value;
+        this.data.defender.psychic.psychicPotential.special = parseInt(modifierValue); // Update the modifier
+        const psychicBonus = this.data.defender.psychic.power?.system.bonus ?? 0;
+        this.data.defender.psychic.psychicPotential.final = this.data.defender.psychic.psychicPotential.base + this.data.defender.psychic.psychicPotential.special + parseInt(psychicBonus); // Update the modifier
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
+    _onPsychicPotentialPPPChange(event) {
+        event.preventDefault();
+        const pppValue = event.target.value;
+        this.data.defender.psychic.psychicPotential.ppp = parseInt(pppValue); // Update the modifier
+        if (this.data.defender.psychic.psychicPotential.ppp > 5) {
+            this.data.defender.psychic.psychicPotential.ppp = 5;
+        }
+        if (this.data.defender.psychic.psychicPotential.ppp + this.data.defender.psychic.psychicProjection.ppp > this.data.defender.psychic.freePsychicPoints) {
+            ui.notifications.warn(game.i18n.localize("abfalter.autoCombat.dialog.warning.tooFewPsychicPoints"));
+            this.data.defender.psychic.psychicPotential.ppp = this.data.defender.psychic.freePsychicPoints - this.data.defender.psychic.psychicProjection.ppp;
+        }
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
+    _onPsychicProjectionModifierChange(event) {
+        event.preventDefault();
+        const modifierValue = event.target.value;
+        this.data.defender.psychic.psychicProjection.special = parseInt(modifierValue); // Update the modifier
+        this.data.defender.psychic.psychicProjection.final = this.data.defender.psychic.psychicProjection.base + this.data.defender.psychic.psychicProjection.special; // Update the modifier
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
+    _onPsychicProjectionPPPChange(event) {
+        event.preventDefault();
+        const pppValue = event.target.value;
+        this.data.defender.psychic.psychicProjection.ppp = parseInt(pppValue); // Update the modifier
+        if (this.data.defender.psychic.psychicProjection.ppp > 5) {
+            this.data.defender.psychic.psychicProjection.ppp = 5;
+        }
+        if (this.data.defender.psychic.psychicPotential.ppp + this.data.defender.psychic.psychicProjection.ppp > this.data.defender.psychic.freePsychicPoints) {
+            ui.notifications.warn(game.i18n.localize("abfalter.autoCombat.dialog.warning.tooFewPsychicPoints"));
+            this.data.defender.psychic.psychicProjection.ppp = this.data.defender.psychic.freePsychicPoints - this.data.defender.psychic.psychicPotential.ppp;
+        }
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
+    _onPsychicPowerSelectionChange(event) {
+        event.preventDefault();
+        const selectedPowerId = event.target.value;
+        this.data.defender.psychic.powerUsed = selectedPowerId; // Update the selected power
+        const power = this.data.defender.psychic.powers.find((w) => w._id === this.data.defender.psychic.powerUsed);
+        this.data.defender.psychic.power = power;
+        this.data.defender.psychic.attainablePowerLevels = [];
+        if (this.data.defender.psychic.psychicPotential.result != 0) {
+            addAttainablePowerLevels(this.data.defender.psychic.attainablePowerLevels, power, this.data.defender.psychic.psychicPotential.result);
+            console.log(this.data.defender.psychic.attainablePowerLevels);
+        }
+        this.data.defender.psychic.powerLevel = this.data.defender.psychic.attainablePowerLevels[this.data.defender.psychic.attainablePowerLevels.length - 1];
+
+        const powerUsedEffect = power?.system.description ?? "";
+        const powerUsedEffectLevel = power?.system[this.data.defender.psychic.powerLevel] ?? "";
+        let powerDamage = damageCheck(powerUsedEffect);
+        if (powerDamage === 0) {
+            powerDamage = damageCheck(powerUsedEffectLevel);
+        }
+        this.data.defender.psychic.damage.base = powerDamage;
+        this.data.defender.psychic.damage.final = powerDamage + this.data.defender.psychic.damage.special;
+        this.data.defender.psychic.damage.type = damageTypeCheck(powerUsedEffect, powerUsedEffectLevel);
+        this.data.defender.psychic.resistanceEffect = resistanceEffectCheck(powerUsedEffect, powerUsedEffectLevel);
+
+        const psychicBonus = power?.system.bonus ?? 0;
+        this.data.defender.psychic.psychicPotential.final = this.data.defender.psychic.psychicPotential.base + this.data.defender.psychic.psychicPotential.special + parseInt(psychicBonus); // Update the modifier
+
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
+    _onPsychicPowerLevelSelectionChange(event) {
+        event.preventDefault();
+        const selectedLevel = event.target.value;
+        this.data.defender.psychic.powerLevel = selectedLevel;
+
+        const power = this.data.defender.psychic.powers.find((w) => w._id === this.data.defender.psychic.powerUsed);
+
+        const powerUsedEffect = power?.system.description ?? "";
+        const powerUsedEffectLevel = power?.system[selectedLevel] ?? "";
+        let powerDamage = damageCheck(powerUsedEffect);
+        if (powerDamage === 0) {
+            powerDamage = damageCheck(powerUsedEffectLevel);
+        }
+        console.log(this.data.defender.psychic.powerLevel);
+        console.log(powerUsedEffectLevel);
+        console.log(powerDamage);
+        this.data.defender.psychic.damage.base = powerDamage;
+        this.data.defender.psychic.damage.final = powerDamage + this.data.defender.psychic.damage.special;
+        this.data.defender.psychic.damage.type = damageTypeCheck(powerUsedEffect, powerUsedEffectLevel);
+        this.data.defender.psychic.resistanceEffect = resistanceEffectCheck(powerUsedEffect, powerUsedEffectLevel);
+
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
+    _onPsychicEliminateFatigueChange(event) {
+        event.preventDefault();
+        this.data.defender.psychic.eliminateFatigue = !this.data.defender.psychic.eliminateFatigue; // Update the modifier
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
+    _onPsychicMentalPatternImbalanceChange(event) {
+        event.preventDefault();
+        this.data.defender.psychic.mentalPatternImbalance = !this.data.defender.psychic.mentalPatternImbalance; // Update the modifier
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
+    _onPsychicShieldValueChange(event) {
+        event.preventDefault();
+        const shieldValue = event.target.value;
+        this.data.defender.psychic.supernaturalShield.shieldValue = shieldValue; // Update the modifier
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
+    _onPsychicNewShieldChange(event) {
+        event.preventDefault();
+        this.data.defender.psychic.supernaturalShield.newShield = !this.data.defender.psychic.supernaturalShield.newShield; // Update the modifier
+        this._updateObject(event); // Call the update method with the updated data
+    }
+
     async _updateObject(event, formData) {
         this.render();
     }
 }
+
 export const defensesCounterCheck = (defensesCounter) => {
     const multipleDefensesPenalty = [-0, -30, -50, -70, -90];
     let currentDefensePenalty = multipleDefensesPenalty[Math.min(defensesCounter.accumulated, 4)];

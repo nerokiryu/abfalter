@@ -34,8 +34,22 @@
 
 
         {{#if this.canCounter}}
-          <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.counter.title" defender=this.defender.name bonus=this.bonus}}}</p>
-        {{else}}
+          {{#if (eq this.defender.defenseType "combat")}}
+            <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.counter.title" defender=this.defender.name bonus=this.bonus}}}</p>
+          {{else if this.rawDamage}}
+            <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.damageShield.title" defender=this.defender.name damage=this.rawDamage}}}</p>
+            {{#unless (eq this.shieldBreakDamage 0)}}
+              <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.damageShieldBreak.title" defender=this.defender.name damage=this.shieldBreakDamage}}}</p>
+              {{#if this.isCrit}}
+                <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.crit.title" defender=this.defender.name crit=this.critLevel}}}</p>
+                {{#if (gt this.critResult 0)}}
+                  <p class='counter'>{{{localize "abfalter.autoCombat.chat.critResult.hit.title" defender=this.defender.name crit=this.critResult}}}</p>
+                  <p class='counter'>{{{localize (concat "abfalter.autoCombat.chat.critResult.effect." this.critResultRound ".title") defender=this.defender.name critResult=this.critResult location=this.location}}}</p>
+                {{/if}}
+              {{/if}}
+            {{/unless}}
+          {{/if}}
+        {{else if this.damage}}
           <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.damage.title" defender=this.defender.name damage=this.damage}}}</p>
           {{#if this.isCrit}}
           <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.crit.title" defender=this.defender.name crit=this.critLevel}}}</p>
@@ -44,6 +58,8 @@
             <p class='counter'>{{{localize (concat "abfalter.autoCombat.chat.critResult.effect." this.critResultRound ".title") defender=this.defender.name critResult=this.critResult location=this.location}}}</p>
             {{/if}}
           {{/if}}
+        {{else}}  
+        <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.noDamage.title" defender=this.defender.name }}}</p>
         {{/if}}
         {{#if this.resistanceEffect}}
           <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.resistance.title" defender=this.defender.name effect=this.resistanceEffect result=this.resistanceResult}}}</p>

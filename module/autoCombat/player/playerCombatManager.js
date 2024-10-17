@@ -1,23 +1,38 @@
-import { combatManager } from "../combatManager.js"
-
+import { combatManager } from "../combatManager.js";
+import { playerCombatType } from "./playerCombatType.js";
+import { combatAttackDialog } from "../dialogs/combatAttackDialog.js";
+import { combatDefenseDialog } from "../dialogs/combatDefenseDialog.js";
+import { genericDialogs } from "../../dialogs.js";
+import { assertCurrentScene, assertGMActive, getSelectedToken, getTargetToken, canOwnerReceiveMessage } from "../utilities.js";
+import { gmCombatDialog } from "../dialogs/gmCombatDialog.js";
+import { gmCombatType } from "../gm/gmCombatType.js";
+import { gmCombatManager } from "../gm/gmCombatManager.js";
 export class playerCombatManager extends combatManager {
     constructor(game) {
         super(game);
     }
     receive(msg) {
         switch (msg.type) {
-            case playerCombatType.RequestToAttack:
-                this.managePlayerAttackRequest(msg);
+            case gmCombatType.CounterAttack:
+                this.manageCounterAttack(msg);
                 break;
-            case playerCombatType.Attack:
-                this.managePlayerAttack(msg);
+            case gmCombatType.Attack:
+                this.manageDefense(msg);
                 break;
-            case playerCombatType.Defend:
-                this.managePlayerDefense(msg);
+            case gmCombatType.CancelCombat:
+                this.endCombat();
+                break;
+            case gmCombatType.RequestToAttackResponse:
+                this.manageAttackRequest(msg);
                 break;
             default:
-                Log.warn('Unknown message', msg);
+                console.warn("Unknown message", msg);
         }
+    }
+
+    isMyToken(tokenId) {
+        console.log(this.game.canvas.tokens?.ownedTokens)
+        return this.game.canvas.tokens?.ownedTokens.filter((tk) => tk.id === tokenId).length === 1;
     }
 
     endCombat() {
@@ -28,50 +43,18 @@ export class playerCombatManager extends combatManager {
             this.combat.close({ executeHook: false });
             this.combat = undefined;
         }
-        /*
-        if (this.defendDialog) {
-            this.defendDialog.close({ force: true });
-            this.defendDialog = undefined;
+        if (this.defenseDialog) {
+            this.defenseDialog.close({ force: true });
+            this.defenseDialog = undefined;
         }
         if (this.attackDialog) {
             this.attackDialog.close({ force: true });
             this.attackDialog = undefined;
         }
-        */
     }
 
-    createNewCombat(attacker, defender) {
-        console.log("I made it: Created New Combat");
-        return new gmCombatDialog(attacker, defender, {
-            onClose: () => {
-                this.endCombat();
-            },
-            onCounterAttack: bonus => {
-                this.endCombat();
-                this.combat = new gmCombatDialog(defender, attacker, {
-                    onClose: () => {
-                        this.endCombat();
-                    },
-                    onCounterAttack: () => {
-                        this.endCombat();
-                    }
-                }, { isCounter: true, counterAttackBonus: bonus });
-                if (canOwnerReceiveMessage(defender.actor)) {
-                    const newMsg = {
-                        type: gmCombatType.counterAttack,
-                        payload: { attackerTokenId: defender.id, defenderTokenId: attacker.id, counterAttackBonus: bonus }
-                    };
-                    this.emit(newMsg);
-                } else {
-                    this.manageAttack(defender, attacker, bonus);
-                }
-            }
-        });
-        console.log("I did it: Created New Combat Ending");
-
-    }
-
-    async sendAttack() {
+    async sendAttackRequest() {
+        assertGMActive();
         assertCurrentScene(); // Checks if the token is in the current scene.
         const { user } = this.game;
         if (!user) return;
@@ -82,14 +65,26 @@ export class playerCombatManager extends combatManager {
         if (targetToken.length === undefined) {
             console.log("Single Attack");
             if (attackerToken?.id) {
-                await genericDialogs.confirm(this.game.i18n.format('abfalter.autoCombat.dialog.attackConfirm.title'), this.game.i18n.format('abfalter.autoCombat.dialog.attackConfirm.body.title', { target: targetToken.name }), {
-                    onConfirm: () => {
-                        if (attackerToken?.id && targetToken?.id) {
-                            this.combat = this.createNewCombat(attackerToken, targetToken);
-                            this.manageAttack(attackerToken, targetToken);
-                        }
+                await genericDialogs.confirm(
+                    this.game.i18n.format("abfalter.autoCombat.dialog.attackConfirm.title"),
+                    this.game.i18n.format("abfalter.autoCombat.dialog.attackConfirm.body.title", { target: targetToken.name }),
+                    {
+                        onConfirm: () => {
+                            if (attackerToken?.id && targetToken?.id) {
+                                const msg = {
+                                    type: playerCombatType.RequestToAttack,
+                                    senderId: user.id,
+                                    payload: {
+                                        attackerTokenId: attackerToken.id,
+                                        defenderTokenId: targetToken.id,
+                                    },
+                                };
+                                this.emit(msg);
+                                this.manageAttack(attackerToken, targetToken);
+                            }
+                        },
                     }
-                });
+                );
             }
         } else {
             console.log("Aoe Attack"); //not implemented
@@ -97,54 +92,85 @@ export class playerCombatManager extends combatManager {
     }
 
     manageAttack(attacker, defender, bonus) {
-        this.attackDialog = new combatAttackDialog(attacker, defender, {
-            onAttack: result => {
-                this.attackDialog?.close({ force: true });
-                this.attackDialog = undefined;
-                if (this.combat) {
-                    this.combat.updateAttackerData(result);
-                    if (canOwnerReceiveMessage(defender.actor)) {
+        this.attackDialog = new combatAttackDialog(
+            attacker,
+            defender,
+            {
+                onAttack: (result) => {
+                    const newMsg = {
+                        type: playerCombatType.Attack,
+                        payload: { attackerTokenId: attacker.id, defenderTokenId: defender.id, result },
+                    };
+                    this.emit(newMsg);
+                },
+            },
+            { counterAttackBonus: bonus }
+        );
+    }
+
+    async manageCounterAttack(msg) {
+        const { attackerTokenId, defenderTokenId, counterAttackBonus } = msg.payload;
+
+        if (!this.isMyToken(attackerTokenId)) {
+            return;
+        }
+
+        const attacker = this.findTokenById(attackerTokenId);
+        const defender = this.findTokenById(defenderTokenId);
+
+        this.manageAttack(attacker, defender, counterAttackBonus);
+        this.attackDialog.updatePermissions(true);
+    }
+
+    async manageDefense(msg) {
+        const { result, attackerTokenId, defenderTokenId } = msg.payload;
+        
+        if (!this.isMyToken(defenderTokenId)) {
+            return;
+        }
+
+        const attacker = this.findTokenById(attackerTokenId);
+        const defender = this.findTokenById(defenderTokenId);
+
+        try {
+            this.defenseDialog = new combatDefenseDialog(
+                attacker,
+                defender,
+                {
+                    onDefense: (result) => {
                         const newMsg = {
-                            type: gmCombatType.Attack,
-                            payload: { attackerTokenId: attacker.id, defenderTokenId: defender.id, result }
+                            type: playerCombatType.Defend,
+                            payload: { attackerTokenId: attacker.id, defenderTokenId: defender.id, result },
                         };
+
                         this.emit(newMsg);
-                    }
-                    else {
-                        const { critic } = result.values;
-                        try {
-                            this.manageDefense(attacker, defender, result.type, critic);
-                        }
-                        catch (err) {
-                            if (err) {
-                                Log.error(err);
-                            }
-                            this.endCombat();
-                        }
-                    }
-                }
+                    },
+                },
+                { result: result, damageType: result.values.damage.type, atPen: result.values.damage.atPen, attackType: result.type }
+            );
+            this.defenseDialog.updatePermissions(true);
+        } catch (err) {
+            if (err) {
+                console.error(err);
             }
-        }, { counterAttackBonus: bonus });
+            this.endCombat();
+        }
     }
-    manageDefense(attacker, defender, attackType, critic) {
-        this.defendDialog = new combatDefenseDialog({ token: attacker, attackType, critic }, defender, {
-            onDefense: result => {
-                if (this.defendDialog) {
-                    this.defendDialog.close({ force: true });
-                    this.defendDialog = undefined;
-                    if (this.combat) {
-                        this.combat.updateDefenderData(result);
-                    }
-                }
+
+    async manageAttackRequest(msg) {
+        if (msg.toUserId !== this.game.user.id) return;
+        if (!this.attackDialog) return;
+
+        if (msg.payload.allowed) {
+            this.attackDialog.updatePermissions(msg.payload.allowed);
+        } else {
+            this.endCombat();
+
+            if (msg.payload.alreadyInACombat) {
+                genericDialogs.prompt(this.game.i18n.localize("abfalter.autoCombat.dialog.error.alreadyInCombat.title"));
+            } else {
+                genericDialogs.prompt(this.game.i18n.localize("abfalter.autoCombat.dialog.error.requestRejected.title"));
             }
-        });
+        }
     }
-
-
-    async managePlayerAttackRequest(msg) {
-
-    }
-
-
-
 }

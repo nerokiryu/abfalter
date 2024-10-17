@@ -1,26 +1,47 @@
 <span> this is the psychic html </span>
 <span> where you set how you attack psychically </span>
 
-{{>
-"systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
-title=(localize 'abfalter.autoCombat.dialog.modifier.title')
-disabled=this.attackSent
-inputName="attacker.psychic.modifier"
-inputValue=this.attacker.psychic.modifier
-}}
-
+{{#if (gt this.attacker.psychic.freePsychicPoints 0) }}
+<div class='columns'>
+    <div>
+        {{>
+        "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+        title=(localize 'abfalter.autoCombat.dialog.psychicProjection.ppp.title')
+        inputName="attacker.psychic.psychicProjection.ppp"
+        inputValue=this.attacker.psychic.psychicProjection.ppp
+        }}
+    </div>
+</div>
+{{/if}}
 {{>
 "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
 title=(localize 'abfalter.autoCombat.dialog.psychicProjection.title')
 disabled=this.attackSent
-inputName="attacker.psychic.psychicProjection"
-inputValue=this.attacker.psychic.psychicProjection
+inputName="attacker.psychic.psychicProjection.special"
+inputValue=this.attacker.psychic.psychicProjection.special
+hasSecondaryInput=true
+disableSecondaryInput=true
+secondaryInputName="attacker.psychic.psychicProjection.final"
+secondaryInputValue=this.attacker.psychic.psychicProjection.final
 }}
 
+{{#if (gt this.attacker.psychic.freePsychicPoints 0) }}
+<div class='columns'>
+    <div>
+        {{>
+        "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
+        title=(localize 'abfalter.autoCombat.dialog.psychicPotential.ppp.title')
+        disabled=this.psychicPotentialSent
+        inputName="attacker.psychic.psychicPotential.ppp"
+        inputValue=this.attacker.psychic.psychicPotential.ppp
+        }}
+    </div>
+</div>
+{{/if}}
 {{>
 "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
 title=(localize 'abfalter.autoCombat.dialog.psychicPotential.title')
-disabled=this.attackSent
+disabled=this.psychicPotentialSent
 inputName="attacker.psychic.psychicPotential.special"
 inputValue=this.attacker.psychic.psychicPotential.special
 hasSecondaryInput=true
@@ -29,9 +50,10 @@ secondaryInputName="attacker.psychic.psychicPotential.final"
 secondaryInputValue=this.attacker.psychic.psychicPotential.final
 }}
 
+
 {{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
 title=(localize 'abfalter.autoCombat.dialog.psychicPower.title')
-disabled=this.attackSent
+disabled=this.psychicPotentialSent
 inputName='attacker.psychic.powerUsed'
 }}
 {{#each this.attacker.psychic.powers}}
@@ -40,24 +62,51 @@ inputName='attacker.psychic.powerUsed'
 {{/each}}
 {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
 
+{{#unless (eq this.attacker.psychic.attainablePowerLevels.length 0)}}
+{{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+  title=(localize 'abfalter.autoCombat.dialog.psychicPowerLevel.title')
+  disabled=this.attackSent
+  inputName='attacker.psychic.powerLevel'
+}}
+{{#each this.attacker.psychic.attainablePowerLevels}}
+  <option {{#if (eq ../this.attacker.psychic.powerLevel this)}}selected{{/if}} value='{{this}}'>{{localize (concat 'abfalter.autoCombat.dialog.powerLevel.' this '.title')}}</option>
+{{/each}}
+{{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+{{/unless}}
+
+{{#unless (eq this.attacker.psychic.resistanceEffect.type undefined)}}
+{{#> 'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'
+  title=(localize 'abfalter.autoCombat.dialog.resistanceEffect.title')
+  disabled=this.attackSent
+  inputName='attacker.psychic.resistanceEffect.types'
+}}
+{{#each this.attacker.psychic.resistanceEffect.types}}
+  <option {{#if (eq ../this.attacker.psychic.resistanceEffect.type this)}}selected{{/if}} value='{{this}}'>{{localize (concat 'abfalter.autoCombat.dialog.resistanceEffect.' (toLowerCase this) '.title')}}</option>
+{{/each}}
+{{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
+{{/unless}}
+
 {{> 'systems/abfalter/templates/autoCombat/common/ui/custom-select-choices.hbs'
-disabled=this.attackSent
-choices=config.iterables.combat.weapon.criticTypesWithNone
-title=(localize "abfalter.autoCombat.dialog.weapon.critic.title")
-inputName='attacker.psychic.critic'
-inputValue=this.attacker.psychic.critic
+  disabled=this.attackSent
+  choices=config.damageTypeSpiritDropdown
+  title=(localize "abfalter.autoCombat.dialog.weapon.damageType.title")
+  inputName='attacker.psychic.weaponType'
+  inputValue=this.attacker.psychic.damage.type
 }}
 
 {{>
 "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
-title=(localize "abfalter.autoCombat.dialog.psychic.damageModifier.title")
-disabled=this.attackSent
-inputName="attacker.psychic.damageModifier"
-inputValue=this.attacker.psychic.damageModifier
+  title=(localize "abfalter.autoCombat.dialog.damage.title")
+  disabled=this.attackSent
+  inputName="attacker.psychic.damage.special"
+  inputValue=this.attacker.psychic.damage.special
+  hasSecondaryInput=true
+  disableSecondaryInput=true
+  secondaryInputName="attacker.psychic.damage.final"
+  secondaryInputValue=attacker.psychic.damage.final
 }}
 
-{{#if (and (gt this.attacker.psychic.freePsychicPoints 0) (eq
-this.attacker.actor.system.psychic.psychicSettings.fatigueResistance false))}}
+{{#if (gt this.attacker.psychic.freePsychicPoints 0) }}
 <div class='columns'>
     <div>
         {{>
@@ -71,7 +120,7 @@ this.attacker.actor.system.psychic.psychicSettings.fatigueResistance false))}}
 </div>
 {{/if}}
 
-{{#unless (eq this.attacker.actor.system.psychic.mentalPatterns.length 0)}}
+{{!-- {{#unless (eq this.attacker.actor.system.psychic.mentalPatterns.length 0)}}
 <div class='columns'>
     <div>
         {{>
@@ -83,7 +132,7 @@ this.attacker.actor.system.psychic.psychicSettings.fatigueResistance false))}}
         }}
     </div>
 </div>
-{{/unless}}
+{{/unless}} --}}
 
 {{#if (eq this.attacker.distance.enable false)}}
 <div class='columns'>
@@ -107,7 +156,13 @@ this.attacker.actor.system.psychic.psychicSettings.fatigueResistance false))}}
     </p>
 </div>
 {{else}}
-<button class='abf-button sendPsychicAttack'>
-    {{localize 'abfalter.autoCombat.dialog.attackButton.title'}}
-</button>
+    {{#if this.psychicPotentialSent}}
+        <button class='abf-button sendPsychicAttack'>
+            {{localize 'abfalter.autoCombat.dialog.attackButton.title'}}
+        </button>
+    {{else}}
+        <button class='abf-button' name='attacker.psychic.rollPsychicPotential'>
+            {{localize 'abfalter.autoCombat.dialog.rollPsychicPotentialButton.title'}}
+        </button>
+    {{/if}}
 {{/if}}
