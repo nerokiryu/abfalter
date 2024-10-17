@@ -161,11 +161,13 @@ export class combatAttackDialog extends FormApplication {
                 combat.weaponUsed = weapons[0]._id; //sets first weapon on select list
             }
             combat.weapon = weapons.find((w) => w._id === combat.weaponUsed);
-            combat.damage.base = combat.weapon.system.finalDmg;
-            combat.damage.final = combat.weapon.system.finalDmg;
+            combat.damage.base = combat.weapon.system.melee.baseDmg;
+            combat.damage.final = combat.weapon.system.melee.baseDmg;
+            console.log(combat)
         } else {
             combat.unarmed = true;
         }
+
 
         ////// MYSTIC //////
 
@@ -365,7 +367,7 @@ export class combatAttackDialog extends FormApplication {
                     damage.type = weapon.system.primDmgT;
                 }
 
-                if (this.data.attacker.combat.projectile.value /*weapon?.system.isRanged*/) {
+                if (this.data.attacker.combat.projectile.value /*weapon?.system.info.type == range*/) {
                     projectile = {
                         value: true,
                         type: weapon.system.shotType.value,
@@ -389,8 +391,8 @@ export class combatAttackDialog extends FormApplication {
                         attackerCombatMod.targetInCover = { value: -40, apply: true };
                     }
                 }
-                damage.base = weapon.system.finalDmg;
-                damage.atPen = weapon.system.atPenFinal;
+                damage.base = weapon.system.melee.baseDmg;
+                damage.atPen = weapon.system.melee.finalATPen;
                 if (damage.type == weapon.system.secDmgT) {
                     attackerCombatMod.secondaryDmgType = { value: -10, apply: true };
                 }
@@ -407,14 +409,14 @@ export class combatAttackDialog extends FormApplication {
 
             console.log(this.data.attacker.actor);
 
-            const attack = weapon ? weapon.system.finalAtk : this.attackerActor.system.combatValues.attack.final;
+            const attack = weapon ? weapon.system.derived.baseAtk : this.attackerActor.system.combatValues.attack.final;
 
             let combatModifier = 0;
             for (const key in attackerCombatMod) {
                 combatModifier += attackerCombatMod[key]?.value ?? 0;
             }
             let finalMod = attack + combatModifier + counterAttackBonus;
-            //let formula = `1d100xa + ${weapon.system.finalAtk} + ${Math.floor(this.data.attacker.combat.fatigueUsed * 15)} + ${this.data.attacker.combat.modifier}`; //+ ${counterAttackBonus}
+            //let formula = `1d100xa + ${weapon.system.derived.baseAtk} + ${Math.floor(this.data.attacker.combat.fatigueUsed * 15)} + ${this.data.attacker.combat.modifier}`; //+ ${counterAttackBonus}
             //const roll = new abfalterRoll(formula, this.data.attacker.attackerActor);
 
             const flavor = weapon
@@ -485,7 +487,7 @@ export class combatAttackDialog extends FormApplication {
                 let attack = magicProjection.final;
 
                 let finalMod = attack + combatModifier;
-                //let formula = `1d100xa + ${weapon.system.finalAtk} + ${Math.floor(this.data.attacker.combat.fatigueUsed * 15)} + ${this.data.attacker.combat.modifier}`; //+ ${counterAttackBonus}
+                //let formula = `1d100xa + ${weapon.system.derived.baseAtk} + ${Math.floor(this.data.attacker.combat.fatigueUsed * 15)} + ${this.data.attacker.combat.modifier}`; //+ ${counterAttackBonus}
                 //const roll = new abfalterRoll(formula, this.data.attacker.attackerActor);
                 const flavor = game.i18n.format("abfalter.autoCombat.dialog.magicAttack.title", {
                     spell: spell.name,
@@ -601,7 +603,7 @@ export class combatAttackDialog extends FormApplication {
         this.data.attacker.combat.weaponUsed = selectedWeaponId; // Update the selected weapon
         this.data.attacker.combat.weapon = this.data.attacker.combat.weaponsList.find((w) => w._id === selectedWeaponId);
         this.data.attacker.combat.damage.type = this.data.attacker.combat.weapon.primDmgT;
-        this.data.attacker.combat.damage.base = this.data.attacker.combat.weapon.system.finalDmg;
+        this.data.attacker.combat.damage.base = this.data.attacker.combat.weapon.system.melee.baseDmg;
         this._updateObject(event); // Call the update method with the updated data
     }
     _onWeaponTypeChange(event) {
@@ -949,7 +951,7 @@ export class combatAttackDialog extends FormApplication {
             combat.damage.final = combat.damage.special + this.data.attacker.actor.system.fistDamage.final;
         } else {
             combat.weapon = weapon;
-            if (weapon?.system.isRanged) {
+            if (weapon?.system.info.type == "range") {
                 combat.projectile = {
                     value: true,
                     type: weapon.system.shotType,

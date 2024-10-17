@@ -358,7 +358,7 @@ export class combatDefenseDialog extends FormApplication {
             const projectileType = this.data.attacker.projectile?.type;
 
             if (this.data.defender.combat.defenseType === "dodge") {
-                value = weapon.system.finalDod;
+                value = weapon.system.derived.baseDod;
                 baseDefense = this.defenderActor.system.combatValues.dodge.final;
                 const mastery = baseDefense >= 200;
                 if (((!distance.enable && !distance.check) || (distance.enable && distance.value > 1)) && projectileType == "shot" && !mastery) {
@@ -368,7 +368,7 @@ export class combatDefenseDialog extends FormApplication {
                     };
                 }
             } else {
-                value = weapon ? weapon.system.finalBlk : this.defenderActor.system.combat.block.final.value;
+                value = weapon ? weapon.system.derived.baseBlk : this.defenderActor.system.combat.block.final.value;
                 baseDefense = this.defenderActor.system.combatValues.block.final;
                 const isShield = weapon?.system.shield !== "none";
                 const mastery = baseDefense >= 200;
@@ -419,7 +419,7 @@ export class combatDefenseDialog extends FormApplication {
             });
             //let formula = `1d100xa + ${weapon.system.finalAtk} + ${Math.floor(this.data.attacker.combat.fatigueUsed * 15)} + ${this.data.attacker.combat.modifier}`; //+ ${counterAttackBonus}
             //const roll = new abfalterRoll(formula, this.data.attacker.attackerActor);
-            const roll = rollCombatWeapon(html, this.data.defender.actor, finalMod, flavor, weapon.system.complex);
+            const roll = rollCombatWeapon(html, this.data.defender.actor, finalMod, flavor, weapon.system.info.complex);
             const result = {
                 roll: roll,
                 type: "combat",

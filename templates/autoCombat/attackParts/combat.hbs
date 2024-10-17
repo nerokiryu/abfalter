@@ -44,7 +44,7 @@
         inputName='attacker.combat.weaponUsed'
     }}
         {{#each this.attacker.combat.weaponsList}}
-        <option {{#if (eq this._id ../this.attacker.combat.weaponUsed)}}selected{{/if}} value='{{this._id}}'>{{localize 'abfalter.autoCombat.dialog.weaponRow.attack.title' name=this.name value=this.system.finalAtk}}</option>
+        <option {{#if (eq this._id ../this.attacker.combat.weaponUsed)}}selected{{/if}} value='{{this._id}}'>{{localize 'abfalter.autoCombat.dialog.weaponRow.attack.title' name=this.name value=this.system.derived.baseAtk}}</option>
         {{/each}}
     {{/'systems/abfalter/templates/autoCombat/common/ui/custom-select.hbs'}}
     {{/if}}
