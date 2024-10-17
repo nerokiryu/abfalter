@@ -36,7 +36,7 @@
         {{#if this.canCounter}}
           {{#if (eq this.defender.defenseType "combat")}}
             <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.counter.title" defender=this.defender.name bonus=this.bonus}}}</p>
-          {{else if this.rawDamage}}
+          {{else if (or this.rawDamage (eq this.rawDamage 0)) }}
             <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.damageShield.title" defender=this.defender.name damage=this.rawDamage}}}</p>
             {{#unless (eq this.shieldBreakDamage 0)}}
               <p class='counter'>{{{localize "abfalter.autoCombat.chat.combatResult.damageShieldBreak.title" defender=this.defender.name damage=this.shieldBreakDamage}}}</p>

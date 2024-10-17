@@ -412,12 +412,20 @@ export class gmCombatDialog extends FormApplication {
             isCrit: this.data.calculations.isCrit,
             defenseType: this.data.defender.result.type,
             attackType: this.data.attacker.result.type,
-            rawDamage: this.data.attacker.result.values.damage.final,
+            
             shieldBreakDamage: this.data.calculations?.shieldBreakDamage || 0,
         };
         console.log(data);
         if (this.data.calculations?.canCounter) {
             data.bonus = this.data.calculations.counterAttackBonus;
+            if(this.data.defender.supernaturalShield.immuneToDamage){
+                data.rawDamage = 0;
+            }else if (this.data.defender.supernaturalShield.doubleDamage){
+                data.rawDamage = this.data.attacker.result.values.damage.final*2;
+            }else{
+                data.rawDamage = this.data.attacker.result.values.damage.final;
+            }
+            
         }
         data.damage = this.data.calculations?.damage;
         if (this.data.calculations.isCrit) {

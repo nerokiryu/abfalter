@@ -1,3 +1,14 @@
-2024/09/25-21:34:04.335 1864 Recovering log #518
-2024/09/25-21:34:04.340 1864 Delete type=0 #518
-2024/09/25-21:34:04.340 1864 Delete type=3 #517
+2024/10/17-02:10:29.944 567c Log #440: 0 ops saved to Table #523 OK
+2024/10/17-02:10:29.945 567c Archiving C:\Users\Swann\AppData\Local\FoundryVTT\Data\systems\abfalter\packs\compendiums/000440.log: OK
+2024/10/17-02:10:29.945 567c Log #486: 0 ops saved to Table #524 OK
+2024/10/17-02:10:29.945 567c Archiving C:\Users\Swann\AppData\Local\FoundryVTT\Data\systems\abfalter\packs\compendiums/000486.log: OK
+2024/10/17-02:10:29.945 567c Log #490: 0 ops saved to Table #525 OK
+2024/10/17-02:10:29.946 567c Archiving C:\Users\Swann\AppData\Local\FoundryVTT\Data\systems\abfalter\packs\compendiums/000490.log: OK
+2024/10/17-02:10:29.946 567c Log #522: 0 ops saved to Table #526 OK
+2024/10/17-02:10:29.946 567c Archiving C:\Users\Swann\AppData\Local\FoundryVTT\Data\systems\abfalter\packs\compendiums/000522.log: OK
+2024/10/17-02:10:29.952 567c Table #132: 2 entries OK
+2024/10/17-02:10:29.954 567c Archiving C:\Users\Swann\AppData\Local\FoundryVTT\Data\systems\abfalter\packs\compendiums/MANIFEST-000439: OK
+2024/10/17-02:10:29.954 567c Archiving C:\Users\Swann\AppData\Local\FoundryVTT\Data\systems\abfalter\packs\compendiums/MANIFEST-000485: OK
+2024/10/17-02:10:29.954 567c Archiving C:\Users\Swann\AppData\Local\FoundryVTT\Data\systems\abfalter\packs\compendiums/MANIFEST-000489: OK
+2024/10/17-02:10:29.955 567c Archiving C:\Users\Swann\AppData\Local\FoundryVTT\Data\systems\abfalter\packs\compendiums/MANIFEST-000521: OK
+2024/10/17-02:10:29.958 567c **** Repaired leveldb C:\Users\Swann\AppData\Local\FoundryVTT\Data\systems\abfalter\packs\compendiums; recovered 1 files; 1260 bytes. Some data may have been lost. ****
