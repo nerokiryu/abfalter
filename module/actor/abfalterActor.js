@@ -532,7 +532,7 @@ export default class abfalterActor extends Actor {
      */
     async evaluatePsychicFatigue(power, powerLevel, eliminateFatigue) {
         const { psychicPoint } = this.system;
-        
+
         const psychicFatigue = {
             value: psychicFatigueCheck(power?.system[powerLevel]),
             immune: false || eliminateFatigue,
@@ -604,9 +604,8 @@ export default class abfalterActor extends Actor {
      * @returns {void}
      */
     async applyDamageSupernaturalShield(damage, doubleDamage, newCombatResult) {
-        
         const shieldValue = this.system.shield.value;
-        const newShieldPoints = doubleDamage ? (shieldValue - damage.final * 2) : (shieldValue - damage.final);
+        const newShieldPoints = doubleDamage ? shieldValue - damage.final * 2 : shieldValue - damage.final;
         if (newShieldPoints > 0) {
             this.update({
                 system: {
@@ -1017,99 +1016,99 @@ export default class abfalterActor extends Actor {
         system.regeneration.final = Math.min(Math.floor(system.regeneration.base + system.regeneration.spec + system.regeneration.temp + system.regeneration.bonus), 20);
         switch (system.regeneration.final) {
             case 1:
-                system.regeneration.resting = "10/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.notResting = "5/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.penaltyReduction = "-5/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.resting = "10/" + game.i18n.localize("abfalter.day");
+                system.regeneration.notResting = "5/" + game.i18n.localize("abfalter.day");
+                system.regeneration.penaltyReduction = "-5/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 10;
                 break;
             case 2:
-                system.regeneration.resting = "20/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.notResting = "10/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.penaltyReduction = "-5/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.resting = "20/" + game.i18n.localize("abfalter.day");
+                system.regeneration.notResting = "10/" + game.i18n.localize("abfalter.day");
+                system.regeneration.penaltyReduction = "-5/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 20;
                 break;
             case 3:
-                system.regeneration.resting = "30/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.notResting = "15/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.penaltyReduction = "-5/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.resting = "30/" + game.i18n.localize("abfalter.day");
+                system.regeneration.notResting = "15/" + game.i18n.localize("abfalter.day");
+                system.regeneration.penaltyReduction = "-5/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 30;
                 break;
             case 4:
-                system.regeneration.resting = "40/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.notResting = "20/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.penaltyReduction = "-10/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.resting = "40/" + game.i18n.localize("abfalter.day");
+                system.regeneration.notResting = "20/" + game.i18n.localize("abfalter.day");
+                system.regeneration.penaltyReduction = "-10/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 40;
                 break;
             case 5:
-                system.regeneration.resting = "50/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.notResting = "25/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.penaltyReduction = "-10/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.resting = "50/" + game.i18n.localize("abfalter.day");
+                system.regeneration.notResting = "25/" + game.i18n.localize("abfalter.day");
+                system.regeneration.penaltyReduction = "-10/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 50;
                 break;
             case 6:
-                system.regeneration.resting = "75/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.notResting = "30/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.penaltyReduction = "-15/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.resting = "75/" + game.i18n.localize("abfalter.day");
+                system.regeneration.notResting = "30/" + game.i18n.localize("abfalter.day");
+                system.regeneration.penaltyReduction = "-15/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 75;
                 break;
             case 7:
-                system.regeneration.resting = "100/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.notResting = "50/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.penaltyReduction = "-20/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.resting = "100/" + game.i18n.localize("abfalter.day");
+                system.regeneration.notResting = "50/" + game.i18n.localize("abfalter.day");
+                system.regeneration.penaltyReduction = "-20/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 100;
                 break;
             case 8:
-                system.regeneration.resting = "250/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.notResting = "100/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.penaltyReduction = "-25/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.resting = "250/" + game.i18n.localize("abfalter.day");
+                system.regeneration.notResting = "100/" + game.i18n.localize("abfalter.day");
+                system.regeneration.penaltyReduction = "-25/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 250;
                 break;
             case 9:
-                system.regeneration.resting = "500/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.notResting = "200/" + game.i18n.localize("abfalter.basicInfo.day");
-                system.regeneration.penaltyReduction = "-30/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.resting = "500/" + game.i18n.localize("abfalter.day");
+                system.regeneration.notResting = "200/" + game.i18n.localize("abfalter.day");
+                system.regeneration.penaltyReduction = "-30/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 500;
                 break;
             case 10:
-                system.regeneration.resting = "1/" + game.i18n.localize("abfalter.basicInfo.minute");
+                system.regeneration.resting = "1/" + game.i18n.localize("abfalter.minute");
                 system.regeneration.notResting = "N/A";
-                system.regeneration.penaltyReduction = "-40/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.penaltyReduction = "-40/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 1440;
                 break;
             case 11:
-                system.regeneration.resting = "2/" + game.i18n.localize("abfalter.basicInfo.minute");
+                system.regeneration.resting = "2/" + game.i18n.localize("abfalter.minute");
                 system.regeneration.notResting = "N/A";
-                system.regeneration.penaltyReduction = "-50/" + game.i18n.localize("abfalter.basicInfo.day");
+                system.regeneration.penaltyReduction = "-50/" + game.i18n.localize("abfalter.day");
                 system.regeneration.rawValue = 2880;
                 break;
             case 12:
-                system.regeneration.resting = "5/" + game.i18n.localize("abfalter.basicInfo.minute");
+                system.regeneration.resting = "5/" + game.i18n.localize("abfalter.minute");
                 system.regeneration.notResting = "N/A";
-                system.regeneration.penaltyReduction = "-5/" + game.i18n.localize("abfalter.basicInfo.hour");
+                system.regeneration.penaltyReduction = "-5/" + game.i18n.localize("abfalter.hour");
                 system.regeneration.rawValue = 7200;
                 break;
             case 13:
-                system.regeneration.resting = "10/" + game.i18n.localize("abfalter.basicInfo.minute");
+                system.regeneration.resting = "10/" + game.i18n.localize("abfalter.minute");
                 system.regeneration.notResting = "N/A";
-                system.regeneration.penaltyReduction = "-10/" + game.i18n.localize("abfalter.basicInfo.hour");
+                system.regeneration.penaltyReduction = "-10/" + game.i18n.localize("abfalter.hour");
                 system.regeneration.rawValue = 10000;
                 break;
             case 14:
                 system.regeneration.resting = "1/" + game.i18n.localize("abfalter.magicTab.turn");
                 system.regeneration.notResting = "N/A";
-                system.regeneration.penaltyReduction = "-15/" + game.i18n.localize("abfalter.basicInfo.hour");
+                system.regeneration.penaltyReduction = "-15/" + game.i18n.localize("abfalter.hour");
                 system.regeneration.rawValue = 20000;
                 break;
             case 15:
                 system.regeneration.resting = "5/" + game.i18n.localize("abfalter.magicTab.turn");
                 system.regeneration.notResting = "N/A";
-                system.regeneration.penaltyReduction = "-20/" + game.i18n.localize("abfalter.basicInfo.hour");
+                system.regeneration.penaltyReduction = "-20/" + game.i18n.localize("abfalter.hour");
                 system.regeneration.rawValue = 50000;
                 break;
             case 16:
                 system.regeneration.resting = "10/" + game.i18n.localize("abfalter.magicTab.turn");
                 system.regeneration.notResting = "N/A";
-                system.regeneration.penaltyReduction = "-50/" + game.i18n.localize("abfalter.basicInfo.minute");
+                system.regeneration.penaltyReduction = "-50/" + game.i18n.localize("abfalter.minute");
                 system.regeneration.rawValue = 100000;
                 break;
             case 17:
@@ -1214,27 +1213,27 @@ export default class abfalterActor extends Actor {
             switch (system.kiPool.innate.type) {
                 case "AGI":
                     system.stats.Agility.kiPoolBase = system.stats.Agility.kiPoolBase * 6;
-                    system.kiPool.innate.tag = game.i18n.localize("abfalter.basicInfo.agi");
+                    system.kiPool.innate.tag = game.i18n.localize("abfalter.agi");
                     break;
                 case "CON":
                     system.stats.Constitution.kiPoolBase = system.stats.Constitution.kiPoolBase * 6;
-                    system.kiPool.innate.tag = game.i18n.localize("abfalter.basicInfo.con");
+                    system.kiPool.innate.tag = game.i18n.localize("abfalter.con");
                     break;
                 case "DEX":
                     system.stats.Dexterity.kiPoolBase = system.stats.Dexterity.kiPoolBase * 6;
-                    system.kiPool.innate.tag = game.i18n.localize("abfalter.basicInfo.dex");
+                    system.kiPool.innate.tag = game.i18n.localize("abfalter.dex");
                     break;
                 case "STR":
                     system.stats.Strength.kiPoolBase = system.stats.Strength.kiPoolBase * 6;
-                    system.kiPool.innate.tag = game.i18n.localize("abfalter.basicInfo.str");
+                    system.kiPool.innate.tag = game.i18n.localize("abfalter.str");
                     break;
                 case "POW":
                     system.stats.Power.kiPoolBase = system.stats.Power.kiPoolBase * 6;
-                    system.kiPool.innate.tag = game.i18n.localize("abfalter.basicInfo.pow");
+                    system.kiPool.innate.tag = game.i18n.localize("abfalter.pow");
                     break;
                 case "WP":
                     system.stats.Willpower.kiPoolBase = system.stats.Willpower.kiPoolBase * 6;
-                    system.kiPool.innate.tag = game.i18n.localize("abfalter.basicInfo.wp");
+                    system.kiPool.innate.tag = game.i18n.localize("abfalter.wp");
                     break;
                 default:
                     system.kiPool.innate.tag = "Error";
@@ -1523,6 +1522,7 @@ export default class abfalterActor extends Actor {
             kiCon: 0,
             wepName: "",
             monsterCost: 0,
+            shieldSpeed: 0,
         };
         this.items.reduce((arr, item) => {
             if (item.type === "class") {
@@ -1719,12 +1719,16 @@ export default class abfalterActor extends Actor {
             }
             if (item.type === "weapon") {
                 if (item.system.equipped == true) {
-                    classBonuses.wepNum += 1;
-                    if (classBonuses.wepNum == 1) {
-                        classBonuses.wepSpd = item.system.FinalWeaponSpeed;
-                        classBonuses.wepName = item.name;
-                    } else if (classBonuses.wepSpd > item.system.FinalWeaponSpeed) {
-                        classBonuses.wepSpd = item.system.FinalWeaponSpeed;
+                    if (item.system.info.type == "shield") {
+                        classBonuses.shieldSpeed += item.system.derived.finalWeaponSpeed;
+                    } else {
+                        classBonuses.wepNum += 1;
+                        if (classBonuses.wepNum == 1) {
+                            classBonuses.wepSpd = item.system.derived.finalWeaponSpeed;
+                            classBonuses.wepName = item.name;
+                        } else if (classBonuses.wepSpd > item.system.derived.finalWeaponSpeed) {
+                            classBonuses.wepSpd = item.system.derived.finalWeaponSpeed;
+                        }
                     }
                 }
             }
@@ -1732,6 +1736,7 @@ export default class abfalterActor extends Actor {
                 classBonuses.monsterCost += parseInt(item.system.cost) || 0;
             }
         });
+
         //Stuff Xp, Presence, Next lvl Xp
         system.levelinfo.level = classBonuses.level; //class Bonus
         if (system.levelinfo.level == 0) {
@@ -2156,9 +2161,9 @@ export default class abfalterActor extends Actor {
                 }
                 break;
             case 20:
-                system.movement.fullMove = game.i18n.localize("abfalter.basicInfo.special");
-                system.movement.fourthMove = game.i18n.localize("abfalter.basicInfo.special");
-                system.movement.runningMove = game.i18n.localize("abfalter.basicInfo.special");
+                system.movement.fullMove = game.i18n.localize("abfalter.special");
+                system.movement.fourthMove = game.i18n.localize("abfalter.special");
+                system.movement.runningMove = game.i18n.localize("abfalter.special");
                 break;
             default:
                 system.movement.fullMove = "0";
@@ -2167,9 +2172,9 @@ export default class abfalterActor extends Actor {
                 break;
         }
         if (system.movement.final > 20) {
-            system.movement.fullMove = game.i18n.localize("abfalter.basicInfo.special");
-            system.movement.fourthMove = game.i18n.localize("abfalter.basicInfo.special");
-            system.movement.runningMove = game.i18n.localize("abfalter.basicInfo.special");
+            system.movement.fullMove = game.i18n.localize("abfalter.special");
+            system.movement.fourthMove = game.i18n.localize("abfalter.special");
+            system.movement.runningMove = game.i18n.localize("abfalter.special");
         }
         //Lifepoint Calculation
         system.lifepoints.class = classBonuses.lpbonus;
@@ -2201,17 +2206,18 @@ export default class abfalterActor extends Actor {
         }
         system.initiative.class = classBonuses.ini;
         system.initiative.wepNumber = classBonuses.wepNum;
-        system.initiative.wepSpeed = classBonuses.wepSpd;
+        system.initiative.wepSpeed = classBonuses.wepSpd + classBonuses.shieldSpeed;
         system.initiative.wepName = classBonuses.wepName;
+
         if (system.initiative.wepNumber > 1 && system.initiative.wepSpeed < 0) {
             system.initiative.wepFinalSpeed = system.initiative.wepSpeed - 20;
-            system.initiative.wepName = game.i18n.localize("abfalter.basicInfo.multiWield");
+            system.initiative.wepName = game.i18n.localize("abfalter.multiWield");
         } else if (system.initiative.wepNumber > 1 && system.initiative.wepSpeed >= 0) {
             system.initiative.wepFinalSpeed = system.initiative.wepSpeed - 10;
-            system.initiative.wepName = game.i18n.localize("abfalter.basicInfo.multiWield");
+            system.initiative.wepName = game.i18n.localize("abfalter.multiWield");
         } else if (system.initiative.wepNumber == 0) {
             system.initiative.wepFinalSpeed = 20;
-            system.initiative.wepName = game.i18n.localize("abfalter.basicInfo.unarmed");
+            system.initiative.wepName = game.i18n.localize("abfalter.unarmed");
         } else {
             system.initiative.wepFinalSpeed = system.initiative.wepSpeed;
         }
@@ -2234,16 +2240,17 @@ export default class abfalterActor extends Actor {
         system.secondaryFields.athletics.piloting.classBonus = classBonuses.pilot;
         system.secondaryFields.athletics.ride.classBonus = classBonuses.ride;
         system.secondaryFields.athletics.swim.classBonus = classBonuses.swim;
+
         for (let [key, sec] of Object.entries(system.secondaryFields.athletics)) {
             sec.parentField = system.secondaryFields.category.athletics;
             switch (sec.modifier) {
-                case "AGI":
+                case game.i18n.localize("abfalter.agi"):
                     sec.modValue = stats.Agility.mod;
                     break;
-                case "STR":
+                case game.i18n.localize("abfalter.str"):
                     sec.modValue = stats.Strength.mod;
                     break;
-                case "DEX":
+                case game.i18n.localize("abfalter.dex"):
                     sec.modValue = stats.Dexterity.mod;
                     break;
             }
@@ -2263,13 +2270,13 @@ export default class abfalterActor extends Actor {
         for (let [key, sec] of Object.entries(system.secondaryFields.social)) {
             sec.parentField = system.secondaryFields.category.social;
             switch (sec.modifier) {
-                case "INT":
+                case game.i18n.localize("abfalter.int"):
                     sec.modValue = stats.Intelligence.mod;
                     break;
-                case "POW":
+                case game.i18n.localize("abfalter.pow"):
                     sec.modValue = stats.Power.mod;
                     break;
-                case "WP":
+                case game.i18n.localize("abfalter.wp"):
                     sec.modValue = stats.Willpower.mod;
                     break;
             }
@@ -2287,7 +2294,7 @@ export default class abfalterActor extends Actor {
 
             sec.parentField = system.secondaryFields.category.perceptive;
             switch (sec.modifier) {
-                case "PER":
+                case game.i18n.localize("abfalter.per"):
                     sec.modValue = stats.Perception.mod;
                     break;
             }
@@ -2307,6 +2314,7 @@ export default class abfalterActor extends Actor {
         );
         system.secondaryFields.perceptive.kidetection.parentField = system.secondaryFields.category.perceptive;
         system.secondaryFields.perceptive.kidetection.modValue = stats.Perception.mod;
+        system.secondaryFields.perceptive.kidetection.base = (system.secondaryFields.perceptive.kidetection.baseNotice + system.mk.final) / 2;
         system.secondaryFields.perceptive.kidetection.natTotal = Math.floor(
             system.secondaryFields.perceptive.kidetection.modValue +
                 system.secondaryFields.perceptive.kidetection.natural +
@@ -2341,10 +2349,10 @@ export default class abfalterActor extends Actor {
         for (let [key, sec] of Object.entries(system.secondaryFields.intellectual)) {
             sec.parentField = system.secondaryFields.category.intellectual;
             switch (sec.modifier) {
-                case "INT":
+                case game.i18n.localize("abfalter.int"):
                     sec.modValue = stats.Intelligence.mod;
                     break;
-                case "POW":
+                case game.i18n.localize("abfalter.pow"):
                     sec.modValue = stats.Power.mod;
                     break;
             }
@@ -2360,10 +2368,10 @@ export default class abfalterActor extends Actor {
         for (let [key, sec] of Object.entries(system.secondaryFields.vigor)) {
             sec.parentField = system.secondaryFields.category.vigor;
             switch (sec.modifier) {
-                case "WP":
+                case game.i18n.localize("abfalter.wp"):
                     sec.modValue = stats.Willpower.mod;
                     break;
-                case "STR":
+                case game.i18n.localize("abfalter.str"):
                     sec.modValue = stats.Strength.mod;
                     break;
             }
@@ -2385,16 +2393,16 @@ export default class abfalterActor extends Actor {
 
             sec.parentField = system.secondaryFields.category.subterfuge;
             switch (sec.modifier) {
-                case "AGI":
+                case game.i18n.localize("abfalter.agi"):
                     sec.modValue = stats.Agility.mod;
                     break;
-                case "DEX":
+                case game.i18n.localize("abfalter.dex"):
                     sec.modValue = stats.Dexterity.mod;
                     break;
-                case "PER":
+                case game.i18n.localize("abfalter.per"):
                     sec.modValue = stats.Perception.mod;
                     break;
-                case "INT":
+                case game.i18n.localize("abfalter.int"):
                     sec.modValue = stats.Intelligence.mod;
                     break;
             }
@@ -2405,7 +2413,7 @@ export default class abfalterActor extends Actor {
         //Ki Concealment
         system.secondaryFields.subterfuge.kiconceal.display = !system.kiAbility.kiConceal.status;
         system.secondaryFields.subterfuge.kiconceal.classBonus = classBonuses.kiCon;
-        system.secondaryFields.subterfuge.kiconceal.baseNotice = Math.floor(
+        system.secondaryFields.subterfuge.kiconceal.baseHide = Math.floor(
             system.secondaryFields.subterfuge.hide.temp +
                 system.secondaryFields.subterfuge.hide.spec +
                 system.secondaryFields.subterfuge.hide.base +
@@ -2414,6 +2422,7 @@ export default class abfalterActor extends Actor {
         );
         system.secondaryFields.subterfuge.kiconceal.parentField = system.secondaryFields.category.subterfuge;
         system.secondaryFields.subterfuge.kiconceal.modValue = stats.Perception.mod;
+        system.secondaryFields.subterfuge.kiconceal.base = (system.secondaryFields.subterfuge.kiconceal.baseHide + system.mk.final) / 2;
         system.secondaryFields.subterfuge.kiconceal.natTotal = Math.floor(
             system.secondaryFields.subterfuge.kiconceal.modValue +
                 system.secondaryFields.subterfuge.kiconceal.natural +
@@ -2447,16 +2456,16 @@ export default class abfalterActor extends Actor {
         for (let [key, sec] of Object.entries(system.secondaryFields.creative)) {
             sec.parentField = system.secondaryFields.category.creative;
             switch (sec.modifier) {
-                case "AGI":
+                case game.i18n.localize("abfalter.agi"):
                     sec.modValue = stats.Agility.mod;
                     break;
-                case "DEX":
+                case game.i18n.localize("abfalter.dex"):
                     sec.modValue = stats.Dexterity.mod;
                     break;
-                case "INT":
+                case game.i18n.localize("abfalter.int"):
                     sec.modValue = stats.Intelligence.mod;
                     break;
-                case "POW":
+                case game.i18n.localize("abfalter.pow"):
                     sec.modValue = stats.Power.mod;
                     break;
             }
@@ -2756,8 +2765,6 @@ export default class abfalterActor extends Actor {
         // Settings
         system.rollRange.final = Math.floor(system.rollRange.base - system.rollRange.spec - system.rollRange.temp - system.rollRange.bonus);
         system.fumleRange.final = Math.floor(system.fumleRange.base + system.fumleRange.spec + system.fumleRange.temp + system.fumleRange.bonus);
-
-        console.log(this);
 
         // Reload Items to get Atk/Def
         this.items.reduce((arr, item) => {
