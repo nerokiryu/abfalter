@@ -1143,7 +1143,7 @@
       "dialog.weaponRow.defense.title": "{name} with {value} block and {valueDodge} dodge",
       "dialog.weaponUsed.title": "Weapon",
       "dialog.winner.title": " wins this assault"
-    },    
+    },
     "globalSettings": {
       "spiritDmg": "Spirit Damage",
       "spiritDetail": "Turns on Homebrew Spirit Damage, requires refresh (f5) to take effect. This homebrew is my own(Luminita).",

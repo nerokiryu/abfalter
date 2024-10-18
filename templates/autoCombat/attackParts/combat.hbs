@@ -1,7 +1,4 @@
 <div>
-    <span> this is the combat html which is heavily WIP still </span><br \><br \>
-
-    <span> Modifier to the attack </span>
     {{>
     "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
     title=(localize 'abfalter.autoCombat.dialog.modifier.title')
@@ -13,7 +10,6 @@
 
 
     {{#if ui.hasFatiguePoints}}
-    <br \><span> Number of fatigue point you want to use </span>
     {{>
     "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
     title=(localize 'abfalter.autoCombat.dialog.fatigue.title')
@@ -24,10 +20,6 @@
     {{else}}
     <p class='label no-fatigue'>{{localize 'abfalter.autoCombat.dialog.notEnoughFatigue.title'}}</p>
     {{/if}}
-
-
-
-    <br \><span> where you set how you attack physically </span><br \>
 
 
     {{#if this.attacker.combat.unarmed}}
@@ -73,8 +65,6 @@
     {{/unless}}
 
 
-
-    <br \><span> Modifier to the damage </span><br \>
     {{>
     "systems/abfalter/templates/autoCombat/common/ui/horizontal-titled-input.hbs"
     title=(localize 'abfalter.autoCombat.dialog.damage.title')
