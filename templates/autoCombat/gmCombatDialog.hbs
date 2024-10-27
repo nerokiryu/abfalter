@@ -4,12 +4,12 @@
     {{#> "systems/abfalter/templates/autoCombat/common/ui/group.hbs"
       class="attack-values"
     }}
+      {{#> "systems/abfalter/templates/autoCombat/common/ui/group-body.hbs"
+        class="attack-values"
+      }}
       {{>
       "systems/abfalter/templates/autoCombat/common/ui/group-header.hbs"
         title=(localize 'abfalter.autoCombat.dialog.attacker.title')
-      }}
-      {{#> "systems/abfalter/templates/autoCombat/common/ui/group-body.hbs"
-        class="attack-values"
       }}
 
 
@@ -277,12 +277,12 @@
     {{#> "systems/abfalter/templates/autoCombat/common/ui/group.hbs"
       class="defender-values"
     }}
+      {{#> "systems/abfalter/templates/autoCombat/common/ui/group-body.hbs"
+        class="defender-values"
+      }}
       {{>
       "systems/abfalter/templates/autoCombat/common/ui/group-header.hbs"
         title=(localize 'abfalter.autoCombat.dialog.defender.title')
-      }}
-      {{#> "systems/abfalter/templates/autoCombat/common/ui/group-body.hbs"
-        class="defender-values"
       }}
 
         <div class='combatant-profile'>

@@ -5807,20 +5807,185 @@ h6 {
 /*
     ***************
     ---------------
+      Auto Combat Chat
+    ---------------
+    ***************
+*/
+
+.abf-chat-message-body > .combatants {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.abf-chat-message-body > .combatants > .combatant-profile {
+    box-shadow: 0 4px 8px 0 rgba(0.3,0.3,0.3,0.5);
+    border-radius: 5px;
+    text-align: center;
+}
+
+.abf-chat-message-body > .combatants > .combatant-profile > .image {
+    width: 100px;
+    margin: 6px;
+}
+
+.abf-chat-message-body > .combatants > .combatant-profile > .image > img {
+    border: none;
+}
+
+.abf-chat-message-body > .combat-result > .result {
+    text-align: center;
+    font-weight: bold;
+}
+
+.abfalter .normalRoll {
+    text-wrap: nowrap;
+}
+
+/*
+    ***************
+    ---------------
       Auto Combat
     ---------------
     ***************
 */
+
+.gmCombatDialog > .combatants {
+    display: flex;
+}
+
+.gmCombatDialog > .combatants {
+    justify-content: space-between;
+    width: -webkit-fill-available;
+    margin-right: 5px;
+}
+
+.gmCombatDialog > .combatants > .versus-label {
+    display: flex;
+    align-items: center;
+    margin: 1em;
+}
+
+.gmCombatDialog .combatant-profile > .image > img {
+    border: none;
+}
+
+.gmCombatDialog #attack-values-context-menu-container .group-header {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.gmCombatDialog #defender-values-context-menu-container .group-header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.gmCombatDialog .group-body {
+    box-shadow: 0 4px 8px 0 rgba(0.4,0.4,0.4,0.7);
+    border-radius: 10px;
+}
+
+.gmCombatDialog .group-body .combatant-profile .name {
+    position: relative;
+    top: -260px;
+    float: right;
+    
+    text-align: right;
+    padding-right: 10px;
+    padding-left: 10px;
+    background-color: antiquewhite;
+    color: black;
+    font-weight: bold;
+}
+
+.gmCombatDialog .combatant-profile > .image {
+    position: relative;
+    padding: 4%;
+    width: 260px;
+}
+
+.gmCombatDialog .combatants .common-titled-input {
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    padding: 0em 1em 0em 1em;
+}
+
+.gmCombatDialog .combatants .common-titled-input .input-container {
+    width: 50%;
+}
+
+.gmCombatDialog .group-body .defense-type, .gmCombatDialog .group-body .attack-type {
+    position: relative;
+    top: -90px;
+    width: 30%;
+    padding-left: 10px;
+
+    background-color: antiquewhite;
+    color: black;
+    font-weight: bold;
+}
+
+.gmCombatDialog .ready-buttons {
+    display: flex;
+}
+
+.gmCombatDialog .group-header .group-header-title, .gmCombatDialog .group-body p,
+.gmCombatDialog .group-body input {
+    text-align: center;
+}
+
+/*
+    ***************
+    ---------------
+      Auto Combat Dialog
+    ---------------
+    ***************
+*/
+
+.confirmation-dialog .buttons, .group-body .defense-buttons {
+    display: flex;
+}
+
+.group-body .sheet-tabs .item {
+    border-radius: 5px 5px 0px 0px;
+    box-shadow: -2px -4px 3px 2px rgba(0,0,0,0.5);
+    padding: 5px 20px 0px 20px;
+}
+
+.group-body .sheet-tabs .active {
+    color: lightgray;
+}
+
+.group-body .common-titled-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.group-body .common-titled-input input {
+    display: flex;
+}
+
+.psychic > .common-titled-input, .psychic > .columns {
+    min-width: 0px;
+    flex-wrap: nowrap;
+}
+
+.group-body .assault-values .common-titled-input {
+    justify-content: space-around;
+}
+
 /*
     ---------
     Macro Bar
     ---------
 */
 .customActionBar {
-  z-index: 70;
-  position: fixed;
-  bottom: 75px;
-  left: 200px;
+    z-index: 70;
+    position: fixed;
+    bottom: 75px;
+    left: 200px;
 }
 .customActionBar .macros {
   display: flex;
